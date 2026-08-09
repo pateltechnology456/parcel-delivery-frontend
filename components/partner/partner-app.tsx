@@ -38,4 +38,36 @@ function NavigationPage() { return <><PageHeading eyebrow="Partner workspace / N
 function Earnings() { return <><PageHeading eyebrow="Partner workspace / Finance" title="Earnings" description="Track your performance and payouts at a glance." action={<Button href="/partner/withdraw">Withdraw funds <Landmark/></Button>}/><div className="partner-stat-grid"><StatCard icon={Wallet} tone="green" label="Available balance" value="₹8,420" sub="Ready to withdraw"/><StatCard icon={CalendarDays} tone="blue" label="This week" value="₹12,680" sub="+12.6% vs last week"/><StatCard icon={Target} tone="orange" label="This month" value="₹42,840" sub="Goal: ₹50,000"/><StatCard icon={Gift} tone="purple" label="Bonuses" value="₹2,400" sub="3 active incentives"/></div><div className="partner-grid-two"><div className="partner-card earnings-chart"><div className="partner-card-title"><div><h2>Weekly earnings</h2><p>Your payout trend over the last 7 days</p></div><button className="partner-select">This week <ChevronDown/></button></div><div className="earnings-bars">{[58,72,48,84,64,92,76].map((h,i) => <div key={i}><i style={{height: `${h}%`}}/><span>{['M','T','W','T','F','S','S'][i]}</span></div>)}</div></div><div className="partner-card payout-card"><div className="partner-card-title"><div><h2>Next payout</h2><p>Scheduled for Friday, 27 June</p></div><Landmark/></div><strong>₹8,420</strong><span>Includes 23 completed deliveries</span><Button href="/partner/withdraw">Manage payout <ChevronRight/></Button></div></div><div className="partner-card payout-table"><div className="partner-card-title"><div><h2>Recent payouts</h2><p>Your latest completed payout cycles</p></div><Link href="/partner/wallet">View wallet <ChevronRight/></Link></div>{['24 Jun 2025','21 Jun 2025','17 Jun 2025'].map((date,i) => <div className="payout-row" key={date}><span className="payout-icon"><Wallet/></span><div><b>Weekly payout</b><small>{date} · 23 deliveries</small></div><strong>{money([8420,12680,9640][i])}</strong><Status color="green">Paid</Status></div>)}</div></> }
 function Placeholder({ title, icon: Icon, text, action }: { title: string; icon: Icon; text: string; action?: React.ReactNode }) { return <><PageHeading eyebrow="Partner workspace" title={title} description={text} action={action}/><div className="partner-placeholder"><span><Icon/></span><h2>{title} workspace</h2><p>This area is ready for your partner operations. Keep everything in one clean, reliable place.</p><Button>{title === 'Withdraw funds' ? 'Request withdrawal' : 'Explore workspace'} <ChevronRight/></Button></div></> }
 function PartnerPage({ section, orderId }: { section?: string; orderId?: string }) { if (orderId) return <OrderDetail id={orderId}/>; if (section === 'orders') return <Orders/>; if (section === 'navigation') return <NavigationPage/>; if (section === 'earnings') return <Earnings/>; if (section === 'wallet') return <Placeholder title="Wallet" icon={CreditCard} text="Manage your balance, payout history, and payment methods." action={<Button href="/partner/withdraw">Withdraw funds <Landmark/></Button>}/>; if (section === 'withdraw') return <Placeholder title="Withdraw funds" icon={Landmark} text="Move your available earnings to your registered bank account."/>; if (section === 'notifications') return <Placeholder title="Notifications" icon={Bell} text="Stay current with delivery requests, bonuses, and account updates."/>; if (section === 'profile') return <Placeholder title="My profile" icon={UserRound} text="Manage your identity, partner rating, and contact details."/>; if (section === 'vehicle') return <Placeholder title="Vehicle" icon={Bike} text="Your registered vehicle and insurance information."/>; if (section === 'documents') return <Placeholder title="Documents" icon={FileText} text="Keep your verification and compliance documents up to date."/>; if (section === 'settings') return <Placeholder title="Settings" icon={Settings} text="Configure notifications, navigation, and partner preferences."/>; return <Overview/> }
-export default function PartnerApp({ section, orderId }: { section?: string; orderId?: string }) { return <Shell><PartnerPage section={section} orderId={orderId}/></Shell> }
+
+function PartnerBottomNav({ section }: { section?: string }) {
+  const tabs = [
+    { href: '/partner', label: 'Home', icon: LayoutDashboard, key: undefined },
+    { href: '/partner/orders', label: 'Orders', icon: ListChecks, key: 'orders' },
+    { href: '/partner/navigation', label: 'Navigate', icon: Navigation, key: 'navigation', center: true },
+    { href: '/partner/earnings', label: 'Earnings', icon: Wallet, key: 'earnings' },
+    { href: '/partner/profile', label: 'Profile', icon: UserRound, key: 'profile' },
+  ]
+  return (
+    <nav className="partner-mobile-bottom-nav" aria-label="Mobile partner navigation">
+      {tabs.map(({ href, label, icon: Icon, key, center }) => {
+        const isActive = section === key || (!section && !key)
+        return (
+          <Link key={href} href={href} className={`${isActive ? 'pnav-active' : ''}${center ? ' pnav-center' : ''}`} aria-label={label}>
+            <Icon />
+            {!center && <span>{label}</span>}
+          </Link>
+        )
+      })}
+    </nav>
+  )
+}
+
+export default function PartnerApp({ section, orderId }: { section?: string; orderId?: string }) {
+  return (
+    <Shell>
+      <PartnerPage section={section} orderId={orderId}/>
+      <PartnerBottomNav section={section}/>
+    </Shell>
+  )
+}
+
