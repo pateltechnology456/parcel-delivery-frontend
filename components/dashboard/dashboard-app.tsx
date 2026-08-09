@@ -27,12 +27,37 @@ const orders = [
 
 function Mark() { return <span className="dash-mark" aria-hidden="true"><i /><i /><i /></span> }
 function Brand() { return <Link href="/dashboard" className="dash-brand"><Mark /><span>Patel <b>Technology</b></span></Link> }
+function BottomNav() {
+  const pathname = usePathname()
+  const bottomLinks = [
+    { href: '/dashboard', label: 'Home', icon: Home },
+    { href: '/dashboard/orders', label: 'Orders', icon: Package },
+    { href: '/dashboard/book', label: 'Book', icon: Plus },
+    { href: '/dashboard/track', label: 'Track', icon: Route },
+    { href: '/dashboard/wallet', label: 'Wallet', icon: Wallet },
+  ]
+  return (
+    <nav className="mobile-bottom-nav" aria-label="Mobile navigation">
+      {bottomLinks.map(({ href, label, icon: Icon }) => {
+        const isActive = pathname === href
+        const isBook = label === 'Book'
+        return (
+          <Link key={href} href={href} className={`bottom-nav-item${isActive ? ' bottom-nav-active' : ''}${isBook ? ' bottom-nav-book' : ''}`} aria-label={label}>
+            <span className="bottom-nav-icon"><Icon size={isBook ? 22 : 20} /></span>
+            {!isBook && <span className="bottom-nav-label">{label}</span>}
+          </Link>
+        )
+      })}
+    </nav>
+  )
+}
+
 function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname(); const [open, setOpen] = useState(false); const [dark, setDark] = useState(false)
-  const links = [...nav, ...secondary]
   return <div className={`dashboard-shell ${dark ? 'dashboard-dark' : ''}`}>
     <aside className={`dashboard-sidebar ${open ? 'sidebar-open' : ''}`}><div className="sidebar-top"><Brand /><button className="sidebar-close" onClick={() => setOpen(false)} aria-label="Close navigation"><X /></button></div><div className="workspace-switch"><span className="workspace-avatar">AK</span><span><b>Acme Commerce</b><small>Business account</small></span><ChevronDown /></div><div className="dash-nav"><small className="nav-label">Workspace</small>{nav.map(({ href, label, icon: Icon }) => <Link key={href} href={href} onClick={() => setOpen(false)} className={pathname === href ? 'active' : ''}><Icon />{label}{label === 'My orders' && <span className="nav-count">12</span>}</Link>)}<small className="nav-label nav-label-spaced">Manage</small>{secondary.map(({ href, label, icon: Icon }) => <Link key={href} href={href} onClick={() => setOpen(false)} className={pathname === href ? 'active' : ''}><Icon />{label}{label === 'Notifications' && <span className="nav-dot" />}</Link>)}</div><div className="sidebar-bottom"><div className="sidebar-status"><span /><div><b>All systems operational</b><small>Updated just now</small></div></div><Link href="/" className="back-site"><ArrowRight /> Back to website</Link></div></aside>
     <div className="dashboard-main"><header className="dashboard-topbar"><button className="mobile-menu" onClick={() => setOpen(true)} aria-label="Open navigation"><Menu /></button><div className="top-search"><Search /><input placeholder="Search shipments, orders..." aria-label="Search dashboard" /></div><div className="top-actions"><button className="icon-button theme-toggle" onClick={() => setDark(!dark)} aria-label="Toggle theme">{dark ? <Sun /> : <Moon />}</button><Link href="/dashboard/notifications" className="icon-button notification-button" aria-label="Notifications"><Bell /><i /></Link><div className="profile-menu"><span className="profile-avatar">AK</span><span className="profile-copy"><b>Ankit Kumar</b><small>Admin</small></span><ChevronDown /></div></div></header><main className="dashboard-content">{children}</main></div>
+    <BottomNav />
   </div>
 }
 function PageHeading({ eyebrow, title, description, action }: { eyebrow?: string; title: string; description?: string; action?: React.ReactNode }) { return <div className="dash-heading"><div><p className="dash-eyebrow">{eyebrow || 'Patel Central'}</p><h1>{title}</h1>{description && <p>{description}</p>}</div>{action}</div> }

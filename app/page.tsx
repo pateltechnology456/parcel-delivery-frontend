@@ -45,7 +45,7 @@ function LogoMark() {
   return <span className="logo-mark" aria-hidden="true"><span /><span /><span /></span>
 }
 
-function Button({ children, variant = 'primary', href = '#contact', className = '' }: { children: React.ReactNode; variant?: 'primary' | 'secondary' | 'ghost'; href?: string; className?: string }) {
+function Button({ children, variant = 'primary', href = '/login', className = '' }: { children: React.ReactNode; variant?: 'primary' | 'secondary' | 'ghost'; href?: string; className?: string }) {
   return <a className={`button button-${variant} ${className}`} href={href}>{children}<ArrowRight size={16} /></a>
 }
 
@@ -59,9 +59,9 @@ function Navbar() {
         <a href="#how-it-works" onClick={() => setOpen(false)}>How it works</a>
         <a href="#about" onClick={() => setOpen(false)}>Why Patel</a>
         <a href="#faq" onClick={() => setOpen(false)}>Resources</a>
-        <div className="mobile-actions"><Button variant="secondary" href="#contact">Log in</Button><Button href="#contact">Get started</Button></div>
+        <div className="mobile-actions"><Button variant="secondary" href="/login">Log in</Button><Button href="/login">Get started</Button></div>
       </div>
-      <div className="nav-actions"><a href="#contact" className="login-link">Log in</a><Button href="#contact">Get started</Button></div>
+      <div className="nav-actions"><a href="/login" className="login-link">Log in</a><Button href="/login">Get started</Button></div>
       <button className="menu-button" onClick={() => setOpen(!open)} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open}>{open ? <X /> : <Menu />}</button>
     </nav>
   </header>
