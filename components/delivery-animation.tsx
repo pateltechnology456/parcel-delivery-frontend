@@ -29,13 +29,18 @@ export function DeliveryAnimation() {
       {/* Ground Line */}
       <div className="absolute bottom-[40px] w-full h-[3px] bg-[#e2e8f0]" />
 
-      <div className="relative z-10 w-full h-full max-w-[700px] flex items-end">
-        {/* Yellow Boxes */}
+      <motion.div 
+        className="relative z-10 w-full h-full max-w-[700px] flex items-end"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.2 }}
+      >
         <motion.div
           className="absolute bottom-[40px] left-[15%]"
-          initial={{ opacity: 0, y: -50, scale: 0.8 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.5, type: "spring", bounce: 0.5 }}
+          variants={{
+            hidden: { opacity: 0, y: -50, scale: 0.8 },
+            visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, delay: 0.5, type: "spring", bounce: 0.5 } }
+          }}
         >
           <svg width="90" height="110" viewBox="0 0 100 120" className="drop-shadow-md">
             {/* Top Box */}
@@ -58,9 +63,10 @@ export function DeliveryAnimation() {
         {/* Truck */}
         <motion.div
           className="absolute bottom-[40px] right-[10%]"
-          initial={{ x: 350, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.8, delay: 1.2, type: "spring", bounce: 0.2 }}
+          variants={{
+            hidden: { x: 350, opacity: 0 },
+            visible: { x: 0, opacity: 1, transition: { duration: 0.8, delay: 1.2, type: "spring", bounce: 0.2 } }
+          }}
         >
           <svg width="220" height="130" viewBox="0 0 220 130" className="drop-shadow-lg">
             {/* Container Box */}
@@ -103,9 +109,10 @@ export function DeliveryAnimation() {
         {/* Delivery Person */}
         <motion.div
           className="absolute bottom-[40px] left-[50%] -translate-x-[50%]"
-          initial={{ y: 250, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.7, delay: 2.2, type: "spring", bounce: 0.3 }}
+          variants={{
+            hidden: { y: 250, opacity: 0 },
+            visible: { y: 0, opacity: 1, transition: { duration: 0.7, delay: 2.2, type: "spring", bounce: 0.3 } }
+          }}
         >
           <svg width="130" height="170" viewBox="0 0 150 190" className="drop-shadow-lg">
             {/* Right Arm (behind back) */}
@@ -150,7 +157,7 @@ export function DeliveryAnimation() {
             <line x1="5" y1="115" x2="18" y2="115" stroke="#1e293b" strokeWidth="1.5" />
           </svg>
         </motion.div>
-      </div>
+      </motion.div>
     </div>
   );
 }
