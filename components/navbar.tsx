@@ -36,8 +36,8 @@ export function Button({
 export function Navbar() {
   const [open, setOpen] = useState(false);
   return (
-    <header className="nav-wrap">
-      <nav className="container nav" aria-label="Main navigation">
+    <header className="nav-wrap h-16 flex items-center" style={{ background: 'white', boxShadow: 'none' }}>
+      <nav className="container nav " aria-label="Main navigation">
         <Link href="/" className="brand" aria-label="Patel Technology home">
           <LogoMark />
           <span>
@@ -51,9 +51,6 @@ export function Navbar() {
           <Link href="/register/partner" onClick={() => setOpen(false)}>
             Delivery partners
           </Link>
-          <div className="mobile-actions">
-            <Button href="/login">Get started</Button>
-          </div>
         </div>
         <div className="nav-actions">
           <Button href="/login">Log in</Button>

@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export function EstimateForm() {
   return (
-    <div className="estimate-wrapper">
+    <div className="estimate-wrapper" style={{ marginTop: '150px', marginBottom: '-120px' }}>
       <div className="estimate-container">
         <div className="estimate-tab">
           <MapPin size={18} className="tab-icon" />

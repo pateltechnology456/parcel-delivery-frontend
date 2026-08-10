@@ -467,8 +467,8 @@ export default function Page() {
   return (
     <main>
       <Navbar />
-      <Hero />
       <EstimateForm />
+      <Hero />
       <Services />
       <Platform />
       <FAQ />
