@@ -123,17 +123,13 @@ function Navbar() {
             Delivery partners
           </a>
           <div className="mobile-actions">
-            <Button variant="secondary" href="/login">
-              Log in
-            </Button>
+            
             <Button href="/login">Get started</Button>
           </div>
         </div>
         <div className="nav-actions">
-          <a href="/login" className="login-link">
-            Log in
-          </a>
-          <Button href="/login">Get started</Button>
+         
+          <Button href="/login">Log in</Button>
         </div>
         <button
           className="menu-button"
