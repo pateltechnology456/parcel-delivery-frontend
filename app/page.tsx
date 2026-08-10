@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { DeliveryAnimation } from "../components/delivery-animation";
 import { EstimateForm } from "../components/estimate-form";
+import { Navbar, Button, LogoMark } from "../components/navbar";
 
 const services = [
   {
@@ -75,74 +76,7 @@ const faqs = [
   ],
 ];
 
-function LogoMark() {
-  return (
-    <span className="logo-mark" aria-hidden="true">
-      <span />
-      <span />
-      <span />
-    </span>
-  );
-}
 
-function Button({
-  children,
-  variant = "primary",
-  href = "/login",
-  className = "",
-}: {
-  children: React.ReactNode;
-  variant?: "primary" | "secondary" | "ghost";
-  href?: string;
-  className?: string;
-}) {
-  return (
-    <a className={`button button-${variant} ${className}`} href={href}>
-      {children}
-      <ArrowRight size={16} />
-    </a>
-  );
-}
-
-function Navbar() {
-  const [open, setOpen] = useState(false);
-  return (
-    <header className="nav-wrap">
-      <nav className="container nav" aria-label="Main navigation">
-        <a className="brand" href="#top" aria-label="Patel Technology home">
-          <LogoMark />
-          <span>
-            Patel <b>Technology</b>
-          </span>
-        </a>
-        <div className={`nav-links ${open ? "nav-open" : ""}`}>
-          <a href="/register/enterprise" onClick={() => setOpen(false)}>
-            For enterprise
-          </a>
-          <a href="/register/partner" onClick={() => setOpen(false)}>
-            Delivery partners
-          </a>
-          <div className="mobile-actions">
-            
-            <Button href="/login">Get started</Button>
-          </div>
-        </div>
-        <div className="nav-actions">
-         
-          <Button href="/login">Log in</Button>
-        </div>
-        <button
-          className="menu-button"
-          onClick={() => setOpen(!open)}
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-        >
-          {open ? <X /> : <Menu />}
-        </button>
-      </nav>
-    </header>
-  );
-}
 
 function Hero() {
   const [tracking, setTracking] = useState("");

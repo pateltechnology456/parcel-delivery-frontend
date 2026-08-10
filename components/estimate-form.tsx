@@ -1,4 +1,5 @@
 import { ArrowRight, ChevronDown, MapPin } from "lucide-react";
+import Link from "next/link";
 
 export function EstimateForm() {
   return (
@@ -46,9 +47,9 @@ export function EstimateForm() {
             </div>
           </div>
           
-          <button className="estimate-submit">
+          <Link href="/fare-estimate" className="estimate-submit">
             Get Estimate <ArrowRight size={18} />
-          </button>
+          </Link>
         </div>
       </div>
     </div>

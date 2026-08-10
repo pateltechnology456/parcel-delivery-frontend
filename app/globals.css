@@ -382,3 +382,213 @@ button, input { font: inherit; }
     margin: 40px auto 40px;
   }
 }
+
+/* Fare Estimate Page */
+.fare-estimate-page {
+  background-color: #f7f9fc;
+  min-height: 100vh;
+  padding-top: 120px;
+  padding-bottom: 60px;
+}
+.fare-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.fare-card {
+  display: flex;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+.fare-left, .fare-right {
+  flex: 1;
+  padding: 30px;
+}
+.fare-divider {
+  width: 1px;
+  background: #e2e8f0;
+  margin: 20px 0;
+}
+.fare-left h3, .fare-right h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 24px;
+}
+.timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+.timeline-item {
+  display: flex;
+  gap: 12px;
+  position: relative;
+  z-index: 2;
+}
+.timeline-marker {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+.timeline-marker.green { background-color: #38a169; }
+.timeline-marker.red { background-color: #e53e3e; }
+.timeline-line {
+  position: absolute;
+  top: 14px;
+  left: 3.5px;
+  bottom: 20px;
+  width: 1px;
+  border-left: 1px dashed #cbd5e0;
+  z-index: 1;
+}
+.timeline-content {
+  flex: 1;
+}
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.timeline-header b {
+  font-size: 13px;
+  color: #2d3748;
+}
+.edit-btn {
+  background: transparent;
+  border: none;
+  color: var(--blue);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+.timeline-content p {
+  font-size: 12px;
+  color: #718096;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.vehicle-options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.vehicle-option {
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.vehicle-option.selected {
+  border: 1px solid var(--blue);
+  background: #f0f5ff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+.vehicle-option-image {
+  margin-bottom: 8px;
+}
+.vehicle-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 16px;
+}
+.vehicle-details {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 13px;
+}
+.vehicle-details .weight {
+  color: #4a5568;
+}
+.vehicle-details .price {
+  font-weight: 700;
+  color: #1a202c;
+}
+
+.vehicle-option.unselected {
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.vehicle-option-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.vehicle-option-text {
+  display: flex;
+  flex-direction: column;
+}
+.vehicle-option-text b {
+  font-size: 13px;
+  color: #2d3748;
+}
+.vehicle-option-text small {
+  font-size: 11px;
+  color: #718096;
+}
+.vehicle-option-price {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a202c;
+}
+
+.fare-footer {
+  margin-top: 30px;
+}
+.discount-banner {
+  background: #2eaf6b;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+.book-btn {
+  width: 100%;
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.book-btn:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .fare-card {
+    flex-direction: column;
+  }
+  .fare-divider {
+    width: auto;
+    height: 1px;
+    margin: 0 20px;
+  }
+}
