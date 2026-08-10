@@ -27,6 +27,7 @@ import {
   Zap,
 } from "lucide-react";
 import { DeliveryAnimation } from "../components/delivery-animation";
+import { EstimateForm } from "../components/estimate-form";
 
 const services = [
   {
@@ -115,10 +116,10 @@ function Navbar() {
           </span>
         </a>
         <div className={`nav-links ${open ? "nav-open" : ""}`}>
-          <a href="#Enterprise" onClick={() => setOpen(false)}>
+          <a href="/register/enterprise" onClick={() => setOpen(false)}>
             For enterprise
           </a>
-          <a href="#Delivery partners" onClick={() => setOpen(false)}>
+          <a href="/register/partner" onClick={() => setOpen(false)}>
             Delivery partners
           </a>
           <div className="mobile-actions">
@@ -537,6 +538,7 @@ export default function Page() {
     <main>
       <Navbar />
       <Hero />
+      <EstimateForm />
       <Services />
       <Platform />
       <FAQ />
