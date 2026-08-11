@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -263,6 +264,7 @@ const loginSchema = z.object({
 type LoginData = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -271,9 +273,20 @@ export function LoginForm() {
   const [notice, setNotice] = useState("");
   const submit = async (data: LoginData) => {
     await new Promise((r) => setTimeout(r, 700));
-    setNotice(
-      `Welcome back. We&apos;re preparing your Patel Central dashboard.`,
-    );
+    const isEnterprise = data.identifier.includes("enterprise");
+    const mockUser = {
+      id: isEnterprise ? "456" : "123",
+      name: isEnterprise ? "ABC Pvt Ltd" : "Ankit Sharma",
+      email: data.identifier,
+      accountType: isEnterprise ? "enterprise" : "normal"
+    };
+    localStorage.setItem("mock_current_user", JSON.stringify(mockUser));
+    
+    setNotice(`Welcome back. Redirecting...`);
+    
+    setTimeout(() => {
+      router.push("/dashboard");
+    }, 500);
   };
   return (
     <form className="auth-form" onSubmit={handleSubmit(submit)} noValidate>

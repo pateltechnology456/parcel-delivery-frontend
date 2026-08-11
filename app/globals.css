@@ -592,3 +592,222 @@ button, input { font: inherit; }
     margin: 0 20px;
   }
 }
+
+/* Retail Dashboard Styles */
+.retail-shell {
+  min-height: 100vh;
+  background: #f5f8fc;
+  color: #10203a;
+  padding-bottom: 70px;
+}
+.retail-main {
+  padding: 16px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.retail-header {
+  margin-bottom: 24px;
+}
+.retail-location-picker {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 12px 16px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  gap: 12px;
+}
+.location-icon.green {
+  color: #2eaf6b;
+  background: #e6f6ee;
+  border-radius: 50%;
+  padding: 4px;
+}
+.location-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.location-text b {
+  font-size: 14px;
+}
+.location-text small {
+  font-size: 12px;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px;
+}
+.chevron {
+  color: #94a3b8;
+}
+
+.retail-services-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.retail-service-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  cursor: pointer;
+}
+.retail-services-grid > .retail-service-card:nth-child(3) {
+  grid-column: span 2;
+  flex-direction: row;
+  align-items: center;
+  padding: 24px 20px;
+}
+.service-image-placeholder {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.service-image-placeholder img {
+  max-width: 80px;
+  max-height: 80px;
+  object-fit: contain;
+}
+.retail-services-grid > .retail-service-card:nth-child(3) .service-image-placeholder img {
+  max-width: 100px;
+  max-height: 100px;
+}
+.service-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.service-content b {
+  font-size: 15px;
+}
+
+.retail-banner {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-radius: 16px;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.rewards-banner {
+  background: linear-gradient(90deg, #fffcf5, #fff5fa);
+  border: 1px solid #fce8f3;
+}
+.rewards-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+}
+.rewards-icon-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.banner-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.banner-text b {
+  font-size: 14px;
+}
+.banner-text small {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.retail-announcements {
+  margin-bottom: 24px;
+}
+.announcement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.announcement-header h3 {
+  font-size: 16px;
+  color: #64748b;
+}
+.announcement-header button {
+  background: none;
+  border: none;
+  color: #1d6bff;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+.announcement-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+.announcement-icon-wrap {
+  background: #eef5ff;
+  border-radius: 12px;
+  padding: 8px;
+}
+.announcement-text {
+  flex: 1;
+}
+.announcement-text b {
+  font-size: 14px;
+}
+.announcement-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 16px;
+}
+.announcement-dots .dot {
+  width: 12px;
+  height: 4px;
+  border-radius: 2px;
+  background: #cbd5e1;
+}
+.announcement-dots .dot.active {
+  background: #10203a;
+}
+
+.retail-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 0;
+  border-top: 1px solid #e2e8f0;
+  z-index: 50;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.retail-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #94a3b8;
+  font-size: 11px;
+  text-decoration: none;
+}
+.retail-nav-item.active {
+  color: #1d6bff;
+}

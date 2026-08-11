@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   BadgeCheck,
@@ -464,6 +465,14 @@ function Footer() {
 }
 
 export default function Page() {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth <= 768) {
+      router.push("/login");
+    }
+  }, [router]);
+
   return (
     <main>
       <Navbar />
