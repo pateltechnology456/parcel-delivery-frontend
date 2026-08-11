@@ -380,36 +380,6 @@ function FAQ() {
   );
 }
 
-function CTA() {
-  return (
-    <section className="cta-section" id="contact">
-      <div className="container cta-inner">
-        <div className="cta-orbit orbit-one" />
-        <div className="cta-orbit orbit-two" />
-        <div className="eyebrow light-eyebrow">
-          <span className="eyebrow-dot" /> Your next move starts here
-        </div>
-        <h2>
-          Ready to move
-          <br />
-          <em>better?</em>
-        </h2>
-        <p>
-          Join thousands of businesses building what&apos;s next with Patel
-          Technology.
-        </p>
-        <div className="cta-actions">
-          <Button href="mailto:hello@pateltechnology.in">
-            Start shipping today
-          </Button>
-          <a href="mailto:hello@pateltechnology.in" className="cta-contact">
-            Talk to a human <ArrowRight size={15} />
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 function Footer() {
   return (
@@ -481,7 +451,6 @@ export default function Page() {
       <Services />
       <Platform />
       <FAQ />
-      <CTA />
       <Footer />
     </main>
   );

@@ -13,6 +13,7 @@ import {
   Eye,
   EyeOff,
   LockKeyhole,
+  KeyRound,
   Mail,
   MapPin,
   Package,
@@ -258,7 +259,7 @@ export function AuthFooter({ children }: { children: React.ReactNode }) {
 
 const loginSchema = z.object({
   identifier: z.string().min(1, "Enter your email or mobile number"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  otp: z.string().min(6, "Enter a valid 6-digit OTP"),
   remember: z.boolean().optional(),
 });
 type LoginData = z.infer<typeof loginSchema>;
@@ -306,12 +307,26 @@ export function LoginForm() {
           {...register("identifier")}
         />
       </Field>
-      <PasswordField
-        label="Password"
-        error={errors.password?.message}
-        register={register}
-        name="password"
-      />
+      <div className="otp-field-container" style={{ position: 'relative' }}>
+        <Field
+          label="6-digit OTP"
+          icon={KeyRound}
+          error={errors.otp?.message}
+        >
+          <input
+            placeholder="123456"
+            maxLength={6}
+            {...register("otp")}
+          />
+        </Field>
+        <button 
+          type="button"
+          onClick={() => setNotice("OTP sent to your number!")}
+          style={{ position: 'absolute', right: '12px', top: '38px', background: 'none', border: 'none', color: '#1d6bff', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}
+        >
+          Get OTP
+        </button>
+      </div>
       <div className="form-options">
         <label className="check-label">
           <input type="checkbox" {...register("remember")} />

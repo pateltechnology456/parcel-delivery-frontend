@@ -6,7 +6,8 @@ import { Check, CheckCircle2, ChevronRight, Mail, Phone, UserRound, Truck, Badge
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Field, PasswordField, SocialButtons, SubmitButton, AuthFooter, FormError } from "./auth-shell";
+import { Field, SocialButtons, SubmitButton, AuthFooter, FormError } from "./auth-shell";
+import { KeyRound } from "lucide-react";
 
 export const partnerRegisterSchema = z
   .object({
@@ -20,19 +21,8 @@ export const partnerRegisterSchema = z
     }),
     vehicleNumber: z.string().min(4, "Enter valid vehicle number"),
     licenseNumber: z.string().min(5, "Enter a valid license number"),
-    password: z
-      .string()
-      .min(8, "Use at least 8 characters")
-      .regex(/[A-Z]/, "Add one uppercase letter")
-      .regex(/[a-z]/, "Add one lowercase letter")
-      .regex(/\d/, "Add one number")
-      .regex(/[^A-Za-z0-9]/, "Add one special character"),
-    confirm: z.string(),
+    otp: z.string().min(6, "Enter a valid 6-digit OTP"),
     terms: z.boolean().refine(Boolean, "Accept the terms to continue"),
-  })
-  .refine((data) => data.password === data.confirm, {
-    path: ["confirm"],
-    message: "Passwords do not match",
   });
 
 type PartnerRegisterData = z.infer<typeof partnerRegisterSchema>;
@@ -48,14 +38,6 @@ export function PartnerRegisterForm() {
     defaultValues: { terms: false },
   });
   const [notice, setNotice] = useState("");
-  const password = watch("password", "");
-  const rules = [
-    { label: "8+ characters", ok: password.length >= 8 },
-    { label: "Uppercase letter", ok: /[A-Z]/.test(password) },
-    { label: "Lowercase letter", ok: /[a-z]/.test(password) },
-    { label: "Number", ok: /\d/.test(password) },
-    { label: "Special character", ok: /[^A-Za-z0-9]/.test(password) },
-  ];
   const submit = async () => {
     await new Promise((r) => setTimeout(r, 700));
     setNotice(
@@ -125,25 +107,27 @@ export function PartnerRegisterForm() {
       >
         <input placeholder="DL-XXXX-XXXXXXX" {...register("licenseNumber")} />
       </Field>
-      <PasswordField
-        label="Create password"
-        error={errors.password?.message}
-        register={register}
-        name="password"
-      />
-      <div className="password-rules">
-        {rules.map((rule) => (
-          <span className={rule.ok ? "rule-ok" : ""} key={rule.label}>
-            <Check size={12} /> {rule.label}
-          </span>
-        ))}
+
+      <div className="otp-field-container" style={{ position: 'relative' }}>
+        <Field
+          label="6-digit OTP"
+          icon={KeyRound}
+          error={errors.otp?.message}
+        >
+          <input
+            placeholder="123456"
+            maxLength={6}
+            {...register("otp")}
+          />
+        </Field>
+        <button 
+          type="button"
+          onClick={() => setNotice("OTP sent to your number!")}
+          style={{ position: 'absolute', right: '12px', top: '38px', background: 'none', border: 'none', color: '#1d6bff', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}
+        >
+          Get OTP
+        </button>
       </div>
-      <PasswordField
-        label="Confirm password"
-        error={errors.confirm?.message}
-        register={register}
-        name="confirm"
-      />
       <label className="terms-label">
         <input type="checkbox" {...register("terms")} />
         <span /> I agree to the <Link href="#terms">
