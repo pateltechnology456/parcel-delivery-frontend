@@ -3,42 +3,128 @@
 import type React from 'react'
 import Link from 'next/link'
 import { useState } from 'react'
-import { Bell, Bike, CalendarDays, Car, Check, ChevronDown, ChevronLeft, ChevronRight, CircleHelp, Clock3, CreditCard, FileText, Gauge, Gift, History, Home, Landmark, LayoutDashboard, ListChecks, LogOut, Map, Menu, Moon, Navigation, Package, PanelLeftClose, Pencil, Phone, Plus, Route, Settings, ShieldCheck, Star, Sun, Target, Truck, UserRound, Wallet, X, Zap } from 'lucide-react'
+import {
+  Bell, Bike, ChevronDown, CircleHelp, CreditCard, FileText, Gauge,
+  LayoutDashboard, ListChecks, LogOut, Menu, Moon, Navigation, PanelLeftClose,
+  Settings, Sun, UserRound, Wallet,
+} from 'lucide-react'
 
-type Icon = React.ComponentType<{ className?: string }>
+/* ── Modular imports ── */
+import { Brand } from './ui/partner-ui'
+import { Placeholder } from './ui/partner-ui'
+import { Overview, Earnings } from './dashboard/overview'
+import { Orders } from './orders/order-list'
+import { OrderDetail } from './orders/order-detail'
+import { NavigationPage } from './navigation/navigation-page'
+import { Landmark } from 'lucide-react'
+import { Button } from './ui/partner-ui'
 
+/* ── Nav config ── */
 const nav = [
   { label: 'Overview', href: '/partner', icon: LayoutDashboard },
   { label: 'My Orders', href: '/partner/orders', icon: ListChecks, badge: 4 },
   { label: 'Navigation', href: '/partner/navigation', icon: Navigation },
 ]
-const money = (n: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n)
 
-function Brand() { return <Link href="/partner" className="partner-brand"><span className="partner-mark"><i/><i/><i/></span><b>Patel<span>Technology</span></b></Link> }
-function Status({ children, color = 'blue' }: { children: React.ReactNode; color?: string }) { return <span className={`partner-status ${color}`}><i/>{children}</span> }
-function Button({ children, href, variant = 'primary', onClick }: { children: React.ReactNode; href?: string; variant?: 'primary'|'secondary'; onClick?: () => void }) { const c = `partner-button ${variant}`; return href ? <Link href={href} className={c}>{children}</Link> : <button className={c} onClick={onClick}>{children}</button> }
-function PageHeading({ eyebrow, title, description, action }: { eyebrow: string; title: string; description: string; action?: React.ReactNode }) { return <div className="partner-heading"><div><p>{eyebrow}</p><h1>{title}</h1><span>{description}</span></div>{action}</div> }
-
+/* ── Shell ── */
 function Shell({ children }: { children: React.ReactNode }) {
-  const [open, setOpen] = useState(false); const [dark, setDark] = useState(false); const [online, setOnline] = useState(true)
-  return <div className={`partner-shell ${dark ? 'partner-dark' : ''}`}><aside className={`partner-sidebar ${open ? 'open' : ''}`}><div className="partner-sidebar-top"><Brand/><button className="partner-close" onClick={() => setOpen(false)}><PanelLeftClose/></button></div><div className="partner-profile-card"><span>AK</span><div><b>Arjun Kumar</b><small>Delivery Partner</small></div><ChevronDown/></div><div className="partner-online-toggle"><span className={online ? 'is-online' : ''}/><div><b>{online ? 'You are online' : 'You are offline'}</b><small>{online ? 'Ready for deliveries' : 'Go online to receive orders'}</small></div><button aria-label="Toggle online status" onClick={() => setOnline(v => !v)} className={online ? 'active' : ''}><i/></button></div><nav className="partner-nav"><p>Main menu</p>{nav.map(item => <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className="partner-nav-link"> <item.icon/><span>{item.label}</span>{item.badge && <em>{item.badge}</em>}</Link>)}<p className="partner-spaced">Finance</p><Link href="/partner/earnings" className="partner-nav-link"><Wallet/><span>Earnings</span></Link><Link href="/partner/wallet" className="partner-nav-link"><CreditCard/><span>Wallet</span></Link><p className="partner-spaced">Account</p><Link href="/partner/notifications" className="partner-nav-link"><Bell/><span>Notifications</span><em>3</em></Link><Link href="/partner/profile" className="partner-nav-link"><UserRound/><span>My profile</span></Link><Link href="/partner/settings" className="partner-nav-link"><Settings/><span>Settings</span></Link></nav><div className="partner-sidebar-bottom"><div className="partner-help"><CircleHelp/><div><b>Need help?</b><small>Contact partner support</small></div></div><Link className="partner-logout" href="/login"><LogOut/> Sign out</Link></div></aside>{open && <button aria-label="Close navigation" className="partner-overlay" onClick={() => setOpen(false)}/>}<main className="partner-main"><header className="partner-topbar"><button aria-label="Open navigation" className="partner-mobile-menu" onClick={() => setOpen(true)}><Menu/></button><div className="partner-search"><Gauge/><input placeholder="Search orders, earnings..."/><kbd>⌘ K</kbd></div><div className="partner-top-actions"><button className="partner-icon-button" onClick={() => setDark(v => !v)} aria-label="Toggle theme">{dark ? <Sun/> : <Moon/>}</button><button className="partner-icon-button partner-bell" aria-label="Notifications"><Bell/><i/></button><div className="partner-user"><span>AK</span><div><b>Arjun Kumar</b><small>ID: PT-DRV-2841</small></div><ChevronDown/></div></div></header><div className="partner-content">{children}</div></main></div>
+  const [open, setOpen] = useState(false)
+  const [dark, setDark] = useState(false)
+  const [online, setOnline] = useState(true)
+  return (
+    <div className={`partner-shell ${dark ? 'partner-dark' : ''}`}>
+      <aside className={`partner-sidebar ${open ? 'open' : ''}`}>
+        <div className="partner-sidebar-top">
+          <Brand />
+          <button className="partner-close" onClick={() => setOpen(false)}><PanelLeftClose /></button>
+        </div>
+        <div className="partner-profile-card">
+          <span>AK</span>
+          <div><b>Arjun Kumar</b><small>Delivery Partner</small></div>
+          <ChevronDown />
+        </div>
+        <div className="partner-online-toggle">
+          <span className={online ? 'is-online' : ''} />
+          <div>
+            <b>{online ? 'You are online' : 'You are offline'}</b>
+            <small>{online ? 'Ready for deliveries' : 'Go online to receive orders'}</small>
+          </div>
+          <button aria-label="Toggle online status" onClick={() => setOnline(v => !v)} className={online ? 'active' : ''}><i /></button>
+        </div>
+        <nav className="partner-nav">
+          <p>Main menu</p>
+          {nav.map(item => (
+            <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className="partner-nav-link">
+              <item.icon /><span>{item.label}</span>{item.badge && <em>{item.badge}</em>}
+            </Link>
+          ))}
+          <p className="partner-spaced">Finance</p>
+          <Link href="/partner/earnings" className="partner-nav-link"><Wallet /><span>Earnings</span></Link>
+          <Link href="/partner/wallet" className="partner-nav-link"><CreditCard /><span>Wallet</span></Link>
+          <p className="partner-spaced">Account</p>
+          <Link href="/partner/notifications" className="partner-nav-link"><Bell /><span>Notifications</span><em>3</em></Link>
+          <Link href="/partner/profile" className="partner-nav-link"><UserRound /><span>My profile</span></Link>
+          <Link href="/partner/settings" className="partner-nav-link"><Settings /><span>Settings</span></Link>
+        </nav>
+        <div className="partner-sidebar-bottom">
+          <div className="partner-help">
+            <CircleHelp />
+            <div><b>Need help?</b><small>Contact partner support</small></div>
+          </div>
+          <Link className="partner-logout" href="/login"><LogOut /> Sign out</Link>
+        </div>
+      </aside>
+      {open && <button aria-label="Close navigation" className="partner-overlay" onClick={() => setOpen(false)} />}
+      <main className="partner-main">
+        <header className="partner-topbar">
+          <button aria-label="Open navigation" className="partner-mobile-menu" onClick={() => setOpen(true)}><Menu /></button>
+          <div className="partner-search">
+            <Gauge /><input placeholder="Search orders, earnings..." /><kbd>⌘ K</kbd>
+          </div>
+          <div className="partner-top-actions">
+            <button className="partner-icon-button" onClick={() => setDark(v => !v)} aria-label="Toggle theme">{dark ? <Sun /> : <Moon />}</button>
+            <button className="partner-icon-button partner-bell" aria-label="Notifications"><Bell /><i /></button>
+            <div className="partner-user">
+              <span>AK</span>
+              <div><b>Arjun Kumar</b><small>ID: PT-DRV-2841</small></div>
+              <ChevronDown />
+            </div>
+          </div>
+        </header>
+        <div className="partner-content">{children}</div>
+      </main>
+    </div>
+  )
 }
 
-function StatCard({ icon: Icon, tone, label, value, sub }: { icon: Icon; tone: string; label: string; value: string; sub: string }) { return <div className="partner-stat"><span className={`partner-stat-icon ${tone}`}><Icon/></span><div><p>{label}</p><strong>{value}</strong><small>{sub}</small></div></div> }
-function MiniMap() { return <div className="partner-map"><div className="partner-map-grid"/><div className="partner-map-road road-1"/><div className="partner-map-road road-2"/><div className="partner-map-road road-3"/><span className="map-name name-1">Vijay Nagar</span><span className="map-name name-2">Palasia</span><span className="map-name name-3">Rajwada</span><span className="partner-map-route"/><span className="partner-map-marker start"><Package/></span><span className="partner-map-marker end"><Home/></span><div className="map-vehicle"><Truck/> <b>PT-2841</b><span>On route</span></div></div> }
-function Welcome() { const [available, setAvailable] = useState(true); return <div className="partner-welcome"><div><p className="partner-eyebrow">Tuesday, 24 June 2025</p><h2>Good morning, Arjun <span>—</span></h2><p>{available ? 'You are ready to make a difference today.' : 'You are currently offline. Switch on to receive orders.'}</p><div className="welcome-actions"><button onClick={() => setAvailable(v => !v)} className={available ? 'available' : ''}><span/>{available ? 'Online & accepting orders' : 'Go online'}</button><small><Star/> 4.9 partner rating</small></div></div><div className="welcome-route"><Route/><span className="route-node first"/><span className="route-node last"/><span className="route-box">12 deliveries<br/><b>today</b></span></div></div> }
-function QuickActions() { return <div className="partner-card quick-actions-card"><div className="partner-card-title"><h2>Quick actions</h2><Zap/></div><div className="partner-quick-grid"><Link href="/partner/navigation"><span className="quick-tone blue"><Navigation/></span><b>Open navigation</b></Link><Link href="/partner/earnings"><span className="quick-tone green"><Wallet/></span><b>View earnings</b></Link><Link href="/partner/withdraw"><span className="quick-tone orange"><Landmark/></span><b>Withdraw funds</b></Link><Link href="/partner/documents"><span className="quick-tone purple"><FileText/></span><b>My documents</b></Link></div></div> }
-function Incoming() { const [orders, setOrders] = useState([{ id: 'PT-2941', from: 'Vijay Nagar', to: 'Bengaluru', pay: 280, dist: '4.8 km', time: '8 min' }, { id: 'PT-2942', from: 'Bhawarkua', to: 'Palasia', pay: 140, dist: '2.1 km', time: '12 min' }]); return <div className="partner-card incoming-card"><div className="partner-card-title"><div><h2>Incoming orders</h2><p>Nearby delivery requests</p></div><Status color="orange">{orders.length} new</Status></div>{orders.length ? orders.map(order => <div className="incoming-order" key={order.id}><div className="incoming-order-top"><span className="order-serial"><Package/> {order.id}</span><b>{money(order.pay)}</b></div><div className="incoming-route"><div><i/><span>{order.from}</span></div><Route/><div><i/><span>{order.to}</span></div></div><div className="incoming-meta"><span><Map/> {order.dist}</span><span><Clock3/> Accept within {order.time}</span><div><button onClick={() => setOrders(v => v.filter(x => x.id !== order.id))} className="reject"><X/> Reject</button><button onClick={() => setOrders(v => v.filter(x => x.id !== order.id))} className="accept"><Check/> Accept</button></div></div></div>) : <div className="partner-empty"><Check/><b>All caught up</b><span>No new delivery requests nearby.</span></div>}<Link className="view-all" href="/partner/orders">View all orders <ChevronRight/></Link></div> }
-function ActiveDelivery() { return <div className="partner-card active-delivery"><div className="partner-card-title"><div><h2>Active delivery</h2><p>Order PT-2841 · Express</p></div><Status>In progress</Status></div><MiniMap/><div className="delivery-route"><div className="delivery-step done"><span><Check/></span><div><b>Pickup complete</b><small>Vijay Nagar · 09:14 AM</small></div></div><div className="delivery-step current"><span><Truck/></span><div><b>Heading to destination</b><small>4.8 km remaining · ETA 10:02 AM</small></div></div><div className="delivery-step"><span><Home/></span><div><b>Drop-off</b><small>HSR Layout, Bengaluru</small></div></div></div><Button href="/partner/navigation">Open navigation <Navigation/></Button></div> }
-function Performance() { return <div className="partner-card performance-card"><div className="partner-card-title"><div><h2>Today&apos;s performance</h2><p>Keep up the momentum</p></div><Target/></div><div className="performance-score"><div className="score-ring"><strong>92</strong><small>/100</small></div><div><b>Great work!</b><span>You&apos;re in the top 12% of partners today.</span></div></div><div className="performance-metrics"><span><b>100%</b><small>On-time rate</small></span><span><b>4.9</b><small>Rating</small></span><span><b>8/8</b><small>Completed</small></span></div></div> }
-function Overview() { return <><PageHeading eyebrow="Partner workspace / Overview" title="Partner overview" description="Your delivery command center for a more productive day." action={<Button href="/partner/orders">View all orders <ChevronRight/></Button>}/><Welcome/><div className="partner-stat-grid"><StatCard icon={Package} tone="blue" label="Deliveries today" value="8" sub="+2 from yesterday"/><StatCard icon={Wallet} tone="green" label="Today&apos;s earnings" value="₹1,840" sub="+18.4% this week"/><StatCard icon={Clock3} tone="orange" label="Online hours" value="6h 24m" sub="Goal: 8 hours"/><StatCard icon={Star} tone="purple" label="Partner rating" value="4.9" sub="Top 12% this month"/></div><div className="partner-grid-two"><Incoming/><QuickActions/></div><div className="partner-grid-two bottom"><ActiveDelivery/><Performance/></div></> }
-function Orders() { const [filter, setFilter] = useState('Active'); const rows = [['PT-2841','Vijay Nagar','HSR Layout','In progress','₹280'],['PT-2838','Palasia','Bengaluru Central','Completed','₹320'],['PT-2835','Bhawarkua','MG Road','Completed','₹190'],['PT-2829','Rau','Vijay Nagar','Completed','₹240'],['PT-2822','Rajwada','Bengaluru','Cancelled','₹0']]; return <><PageHeading eyebrow="Partner workspace / Orders" title="My orders" description="Manage active, completed, and upcoming deliveries." action={<Button href="/partner/navigation">Open map <Map/></Button>}/><div className="partner-card full-table-card"><div className="partner-table-toolbar"><div className="partner-tabs">{['Active','Completed','Cancelled'].map(t => <button className={filter === t ? 'active' : ''} onClick={() => setFilter(t)} key={t}>{t}<span>{t === 'Active' ? 1 : t === 'Completed' ? 3 : 1}</span></button>)}</div><div className="partner-table-actions"><div className="partner-mini-search"><Gauge/><input placeholder="Search orders"/></div><button className="partner-filter"><CalendarDays/> Today <ChevronDown/></button></div></div><div className="partner-wide-table"><div className="partner-wide-row head"><span>Order ID</span><span>Pickup</span><span>Destination</span><span>Status</span><span>Earnings</span><span/></div>{rows.filter(r => filter === 'Active' ? r[3] === 'In progress' : filter === 'Completed' ? r[3] === 'Completed' : r[3] === 'Cancelled').map(row => <Link className="partner-wide-row" href={`/partner/orders/${row[0]}`} key={row[0]}><span><b>{row[0]}</b><small>Today · 09:14 AM</small></span><span>{row[1]}</span><span>{row[2]}</span><Status color={row[3] === 'Completed' ? 'green' : row[3] === 'Cancelled' ? 'red' : 'blue'}>{row[3]}</Status><strong>{row[4]}</strong><ChevronRight/></Link>)}</div></div></> }
-function OrderDetail({ id = 'PT-2841' }: { id?: string }) { return <><PageHeading eyebrow={`Partner workspace / Orders / ${id}`} title={id} description="Delivery details, route, payout, and customer information." action={<Button href="/partner/navigation">Navigate <Navigation/></Button>}/><div className="partner-detail-grid"><div className="partner-card detail-main"><div className="detail-status"><Status>In progress</Status><span>Express delivery · Booked 08:47 AM</span></div><h2>Vijay Nagar <Route/> HSR Layout</h2><MiniMap/><div className="delivery-route"><div className="delivery-step done"><span><Check/></span><div><b>Package picked up</b><small>Vijay Nagar · Today, 09:14 AM</small></div></div><div className="delivery-step current"><span><Truck/></span><div><b>In transit</b><small>Estimated arrival 10:02 AM</small></div></div><div className="delivery-step"><span><Home/></span><div><b>Destination</b><small>HSR Layout, Bengaluru</small></div></div></div></div><div className="partner-card order-summary"><h2>Order summary</h2><div><span>Customer</span><b>Neha Sharma</b></div><div><span>Phone</span><b>+91 98765 43210</b></div><div><span>Package</span><b>2.5 kg · Electronics</b></div><div><span>Your payout</span><strong>₹280</strong></div><Button variant="secondary"><Phone/> Call customer</Button></div></div></> }
-function NavigationPage() { return <><PageHeading eyebrow="Partner workspace / Navigation" title="Active navigation" description="Follow your active route with live delivery updates." action={<Button href="/partner/orders">My orders <ListChecks/></Button>}/><div className="partner-card large-nav-card"><div className="nav-card-header"><div><Status>Live route</Status><h2>PT-2841 · Vijay Nagar to HSR Layout</h2><p>4.8 km remaining · ETA 10:02 AM</p></div><Button variant="secondary"><Phone/> Customer</Button></div><MiniMap/><div className="nav-bottom"><div><b>Next stop</b><span>HSR Layout, Bengaluru</span></div><Button>Mark as delivered <Check/></Button></div></div></> }
-function Earnings() { return <><PageHeading eyebrow="Partner workspace / Finance" title="Earnings" description="Track your performance and payouts at a glance." action={<Button href="/partner/withdraw">Withdraw funds <Landmark/></Button>}/><div className="partner-stat-grid"><StatCard icon={Wallet} tone="green" label="Available balance" value="₹8,420" sub="Ready to withdraw"/><StatCard icon={CalendarDays} tone="blue" label="This week" value="₹12,680" sub="+12.6% vs last week"/><StatCard icon={Target} tone="orange" label="This month" value="₹42,840" sub="Goal: ₹50,000"/><StatCard icon={Gift} tone="purple" label="Bonuses" value="₹2,400" sub="3 active incentives"/></div><div className="partner-grid-two"><div className="partner-card earnings-chart"><div className="partner-card-title"><div><h2>Weekly earnings</h2><p>Your payout trend over the last 7 days</p></div><button className="partner-select">This week <ChevronDown/></button></div><div className="earnings-bars">{[58,72,48,84,64,92,76].map((h,i) => <div key={i}><i style={{height: `${h}%`}}/><span>{['M','T','W','T','F','S','S'][i]}</span></div>)}</div></div><div className="partner-card payout-card"><div className="partner-card-title"><div><h2>Next payout</h2><p>Scheduled for Friday, 27 June</p></div><Landmark/></div><strong>₹8,420</strong><span>Includes 23 completed deliveries</span><Button href="/partner/withdraw">Manage payout <ChevronRight/></Button></div></div><div className="partner-card payout-table"><div className="partner-card-title"><div><h2>Recent payouts</h2><p>Your latest completed payout cycles</p></div><Link href="/partner/wallet">View wallet <ChevronRight/></Link></div>{['24 Jun 2025','21 Jun 2025','17 Jun 2025'].map((date,i) => <div className="payout-row" key={date}><span className="payout-icon"><Wallet/></span><div><b>Weekly payout</b><small>{date} · 23 deliveries</small></div><strong>{money([8420,12680,9640][i])}</strong><Status color="green">Paid</Status></div>)}</div></> }
-function Placeholder({ title, icon: Icon, text, action }: { title: string; icon: Icon; text: string; action?: React.ReactNode }) { return <><PageHeading eyebrow="Partner workspace" title={title} description={text} action={action}/><div className="partner-placeholder"><span><Icon/></span><h2>{title} workspace</h2><p>This area is ready for your partner operations. Keep everything in one clean, reliable place.</p><Button>{title === 'Withdraw funds' ? 'Request withdrawal' : 'Explore workspace'} <ChevronRight/></Button></div></> }
-function PartnerPage({ section, orderId }: { section?: string; orderId?: string }) { if (orderId) return <OrderDetail id={orderId}/>; if (section === 'orders') return <Orders/>; if (section === 'navigation') return <NavigationPage/>; if (section === 'earnings') return <Earnings/>; if (section === 'wallet') return <Placeholder title="Wallet" icon={CreditCard} text="Manage your balance, payout history, and payment methods." action={<Button href="/partner/withdraw">Withdraw funds <Landmark/></Button>}/>; if (section === 'withdraw') return <Placeholder title="Withdraw funds" icon={Landmark} text="Move your available earnings to your registered bank account."/>; if (section === 'notifications') return <Placeholder title="Notifications" icon={Bell} text="Stay current with delivery requests, bonuses, and account updates."/>; if (section === 'profile') return <Placeholder title="My profile" icon={UserRound} text="Manage your identity, partner rating, and contact details."/>; if (section === 'vehicle') return <Placeholder title="Vehicle" icon={Bike} text="Your registered vehicle and insurance information."/>; if (section === 'documents') return <Placeholder title="Documents" icon={FileText} text="Keep your verification and compliance documents up to date."/>; if (section === 'settings') return <Placeholder title="Settings" icon={Settings} text="Configure notifications, navigation, and partner preferences."/>; return <Overview/> }
+import { WalletPage } from './wallet/wallet-page'
+import { DocumentsPage } from './documents/documents-page'
+import { NotificationsPage } from './notifications/notifications-page'
+import { ProfilePage } from './profile/profile-page'
+import { SettingsPage } from './settings/settings-page'
+import { VehiclePage } from './vehicle/vehicle-page'
+import { SupportPage } from './support/support-page'
+import { SafetyPage } from './safety/safety-page'
 
+/* ── Page Router ── */
+function PartnerPage({ section, orderId }: { section?: string; orderId?: string }) {
+  if (orderId) return <OrderDetail id={orderId} />
+  if (section === 'orders') return <Orders />
+  if (section === 'navigation') return <NavigationPage />
+  if (section === 'earnings') return <Earnings />
+  if (section === 'wallet') return <WalletPage />
+  if (section === 'withdraw') return <Placeholder title="Withdraw funds" icon={Landmark} text="Move your available earnings to your registered bank account." />
+  if (section === 'notifications') return <NotificationsPage />
+  if (section === 'profile') return <ProfilePage />
+  if (section === 'vehicle') return <VehiclePage />
+  if (section === 'documents') return <DocumentsPage />
+  if (section === 'settings') return <SettingsPage />
+  if (section === 'support') return <SupportPage />
+  if (section === 'safety') return <SafetyPage />
+  return <Overview />
+}
+
+/* ── Bottom Nav ── */
 function PartnerBottomNav({ section }: { section?: string }) {
   const tabs = [
     { href: '/partner', label: 'Home', icon: LayoutDashboard, key: undefined },
@@ -65,9 +151,8 @@ function PartnerBottomNav({ section }: { section?: string }) {
 export default function PartnerApp({ section, orderId }: { section?: string; orderId?: string }) {
   return (
     <Shell>
-      <PartnerPage section={section} orderId={orderId}/>
-      <PartnerBottomNav section={section}/>
+      <PartnerPage section={section} orderId={orderId} />
+      <PartnerBottomNav section={section} />
     </Shell>
   )
 }
-
