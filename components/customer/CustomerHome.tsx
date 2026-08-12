@@ -4,6 +4,7 @@ import {
   ChevronRight,
   Megaphone,
 } from "lucide-react";
+import Link from "next/link";
 
 export function CustomerHome({
   section,
@@ -35,7 +36,7 @@ export function CustomerHome({
 
           {/* Services Grid */}
           <div className="retail-services-grid">
-            <div className="retail-service-card">
+            <Link href="/dashboard/book?vehicle=truck" className="retail-service-card">
               <div className="service-image-placeholder">
                 <img src="/images/truck.png" alt="Truck" />
               </div>
@@ -43,8 +44,8 @@ export function CustomerHome({
                 <b>Trucks</b>
                 <ChevronRight size={16} />
               </div>
-            </div>
-            <div className="retail-service-card">
+            </Link>
+            <Link href="/dashboard/book?vehicle=bike" className="retail-service-card">
               <div className="service-image-placeholder">
                 <img src="/images/bike.png" alt="2 Wheeler" />
               </div>
@@ -52,8 +53,8 @@ export function CustomerHome({
                 <b>2 Wheeler</b>
                 <ChevronRight size={16} />
               </div>
-            </div>
-            <div className="retail-service-card">
+            </Link>
+            <Link href="/dashboard/book?vehicle=packers" className="retail-service-card">
               <div className="service-image-placeholder">
                 <img src="/images/packers.png" alt="Packers and Movers" />
               </div>
@@ -61,7 +62,7 @@ export function CustomerHome({
                 <b>Packers & Movers</b>
                 <ChevronRight size={16} />
               </div>
-            </div>
+            </Link>
           </div>
 
           {/* Rewards Banner */}

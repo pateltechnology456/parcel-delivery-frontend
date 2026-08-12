@@ -1,9 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Profile } from "./views/Profile";
+import { SettingsPage } from "./views/SettingsPage";
+import { Language } from "./views/Language";
+import { Terms } from "./views/Terms";
+import { Support } from "./views/Support";
+import { WalletPage } from "./views/WalletPage";
+import { NotificationsPage } from "./views/NotificationsPage";
+import { AddressesPage } from "./views/AddressesPage";
+import { Overview } from "./views/Overview";
+import { Orders } from "./views/Orders";
+import { Track } from "./views/Track";
+import { Book } from "./views/Book";
+import { OrderDetail } from "./views/OrderDetail";
+import { orders } from "./data";
 import {
   Activity,
   ArrowDownToLine,
@@ -15,7 +29,9 @@ import {
   ChevronDown,
   CircleHelp,
   CreditCard,
+  Edit,
   FileText,
+  Globe,
   Home,
   LogOut,
   MapPin,
@@ -46,44 +62,6 @@ const secondary = [
   { href: "/dashboard/addresses", label: "Saved addresses", icon: MapPin },
   { href: "/dashboard/notifications", label: "Notifications", icon: Bell },
   { href: "/dashboard/support", label: "Help & support", icon: CircleHelp },
-];
-const orders = [
-  {
-    id: "PT-2048",
-    destination: "Bengaluru, KA",
-    type: "Express delivery",
-    date: "Today, 09:14 AM",
-    status: "In transit",
-    color: "blue",
-    amount: "₹840",
-  },
-  {
-    id: "PT-2047",
-    destination: "Mumbai, MH",
-    type: "Intercity standard",
-    date: "Yesterday, 04:32 PM",
-    status: "Delivered",
-    color: "green",
-    amount: "₹1,240",
-  },
-  {
-    id: "PT-2046",
-    destination: "Bhopal, MP",
-    type: "Same-day delivery",
-    date: "12 Aug, 11:18 AM",
-    status: "Delivered",
-    color: "green",
-    amount: "₹420",
-  },
-  {
-    id: "PT-2045",
-    destination: "Delhi, DL",
-    type: "Express delivery",
-    date: "11 Aug, 02:50 PM",
-    status: "Cancelled",
-    color: "red",
-    amount: "₹980",
-  },
 ];
 
 function Mark() {
@@ -141,6 +119,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   return (
     <div className={`dashboard-shell ${dark ? "dashboard-dark" : ""}`}>
       <aside className={`dashboard-sidebar ${open ? "sidebar-open" : ""}`}>
@@ -235,14 +214,83 @@ export function Shell({ children }: { children: React.ReactNode }) {
               <Bell />
               <i />
             </Link>
-            <div className="profile-menu">
-              <span className="profile-avatar">AK</span>
-              <span className="profile-copy">
-                <b>Ankit Kumar</b>
-                <small>Admin</small>
-              </span>
-              <ChevronDown />
+            <div className="profile-menu-wrapper" style={{ position: 'relative' }}>
+              <div
+                className="profile-menu"
+                onClick={() => setProfileOpen(true)}
+                role="button"
+                tabIndex={0}
+              >
+                <span className="profile-avatar">AK</span>
+                <span className="profile-copy">
+                  <b>Ankit Kumar</b>
+                  <small>Admin</small>
+                </span>
+                <ChevronDown />
+              </div>
+              
+              {/* Desktop Dropdown */}
+              {profileOpen && (
+                <>
+                  <div className="profile-overlay desktop-only" onClick={() => setProfileOpen(false)} />
+                  <div className="profile-dropdown desktop-only">
+                    <div className="dropdown-header">
+                      <b>Ankit Kumar</b>
+                      <small>ankit@acme.com</small>
+                    </div>
+                    <div className="dropdown-body">
+                      <Link href="/dashboard/profile" onClick={() => setProfileOpen(false)}>
+                        <Edit size={16} /> Edit Profile
+                      </Link>
+                      <Link href="/dashboard/settings" onClick={() => setProfileOpen(false)}>
+                        <Settings size={16} /> Preferences
+                      </Link>
+                      <button onClick={() => setProfileOpen(false)} className="logout-btn">
+                        <LogOut size={16} /> Logout
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
+
+            {/* Mobile Profile Sidebar */}
+            <aside className={`mobile-profile-sidebar ${profileOpen ? "sidebar-open" : ""}`}>
+              <div className="sidebar-top">
+                <div className="profile-info-large">
+                  <span className="profile-avatar large">AK</span>
+                  <div>
+                    <b>Ankit Kumar</b>
+                    <small>Admin</small>
+                  </div>
+                </div>
+                <button
+                  className="sidebar-close"
+                  onClick={() => setProfileOpen(false)}
+                  aria-label="Close profile menu"
+                >
+                  <X />
+                </button>
+              </div>
+              <div className="dash-nav mobile-profile-nav">
+                <Link href="/dashboard/profile" onClick={() => setProfileOpen(false)}>
+                  <Edit /> Edit Profile
+                </Link>
+                <Link href="/dashboard/language" onClick={() => setProfileOpen(false)}>
+                  <Globe /> Language
+                </Link>
+                <Link href="/dashboard/support" onClick={() => setProfileOpen(false)}>
+                  <CircleHelp /> Help & Support
+                </Link>
+                <Link href="/dashboard/terms" onClick={() => setProfileOpen(false)}>
+                  <FileText /> Terms & Condition
+                </Link>
+                <button className="logout-btn-mobile" onClick={() => setProfileOpen(false)}>
+                  <LogOut /> Logout
+                </button>
+              </div>
+            </aside>
+            {profileOpen && <div className="mobile-overlay-bg" onClick={() => setProfileOpen(false)} />}
           </div>
         </header>
         <main className="dashboard-content">{children}</main>
@@ -251,7 +299,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
-function PageHeading({
+export function PageHeading({
   eyebrow,
   title,
   description,
@@ -273,7 +321,7 @@ function PageHeading({
     </div>
   );
 }
-function StatCard({
+export function StatCard({
   icon: Icon,
   label,
   value,
@@ -301,7 +349,7 @@ function StatCard({
     </div>
   );
 }
-function Button({
+export function Button({
   children,
   href,
   variant = "primary",
@@ -319,7 +367,7 @@ function Button({
     <button className={className}>{children}</button>
   );
 }
-function StatusBadge({ status, color }: { status: string; color: string }) {
+export function StatusBadge({ status, color }: { status: string; color: string }) {
   return (
     <span className={`status-badge ${color}`}>
       <i />
@@ -327,536 +375,8 @@ function StatusBadge({ status, color }: { status: string; color: string }) {
     </span>
   );
 }
-function OrderTable() {
-  return (
-    <div className="dash-card orders-card">
-      <div className="card-heading">
-        <div>
-          <h2>Recent orders</h2>
-          <p>Your latest shipments at a glance.</p>
-        </div>
-        <Link href="/dashboard/orders">
-          View all <ArrowRight />
-        </Link>
-      </div>
-      <div className="order-table">
-        <div className="order-row order-head">
-          <span>Order ID</span>
-          <span>Destination</span>
-          <span>Booked on</span>
-          <span>Status</span>
-          <span>Amount</span>
-        </div>
-        {orders.map((order) => (
-          <Link
-            href={`/dashboard/orders/${order.id}`}
-            className="order-row"
-            key={order.id}
-          >
-            <span>
-              <b>{order.id}</b>
-              <small>{order.type}</small>
-            </span>
-            <span>{order.destination}</span>
-            <span>{order.date}</span>
-            <StatusBadge status={order.status} color={order.color} />
-            <span className="amount">{order.amount}</span>
-          </Link>
-        ))}
-      </div>
-    </div>
-  );
-}
 
-function Overview() {
-  return (
-    <>
-      <PageHeading
-        eyebrow="Tuesday, 12 August 2025"
-        title="Good morning, Ankit"
-        description="Here’s what’s moving across your business today."
-        action={
-          <Button href="/dashboard/book">
-            <Plus /> New shipment
-          </Button>
-        }
-      />
-      <div className="stat-grid">
-        <StatCard
-          icon={Package}
-          label="Total shipments"
-          value="1,284"
-          change="+18.4% this month"
-        />
-        <StatCard
-          icon={Truck}
-          label="In transit"
-          value="472"
-          change="+8.2% from yesterday"
-          tone="orange"
-        />
-        <StatCard
-          icon={CheckCircle2}
-          label="Delivered"
-          value="798"
-          change="+12.6% this month"
-          tone="green"
-        />
-        <StatCard
-          icon={Wallet}
-          label="Wallet balance"
-          value="₹24,680"
-          change="+₹12,400 this month"
-          tone="purple"
-        />
-      </div>
-      <div className="dash-grid-two">
-       
-        <div className="dash-card quick-card">
-          <div className="card-heading">
-            <div>
-              <h2>Quick actions</h2>
-              <p>Common things, one click away.</p>
-            </div>
-            <Zap />
-          </div>
-          <div className="quick-actions">
-            <Link href="/dashboard/book">
-              <span className="quick-icon blue">
-                <Plus />
-              </span>
-              <span>
-                <b>Book a delivery</b>
-                <small>Create a new shipment</small>
-              </span>
-              <ArrowRight />
-            </Link>
-            <Link href="/dashboard/track">
-              <span className="quick-icon orange">
-                <Route />
-              </span>
-              <span>
-                <b>Track a parcel</b>
-                <small>Find your shipment</small>
-              </span>
-              <ArrowRight />
-            </Link>
-            <Link href="/dashboard/wallet">
-              <span className="quick-icon green">
-                <Wallet />
-              </span>
-              <span>
-                <b>Add wallet balance</b>
-                <small>Top up your account</small>
-              </span>
-              <ArrowRight />
-            </Link>
-          </div>
-        </div>
-      </div>
-      <OrderTable />
-    </>
-  );
-}
-function Orders() {
-  const [filter, setFilter] = useState("All orders");
-  return (
-    <>
-      <PageHeading
-        eyebrow="Workspace / Orders"
-        title="My orders"
-        description="Manage and monitor every shipment from one place."
-        action={
-          <Button href="/dashboard/book">
-            <Plus /> New shipment
-          </Button>
-        }
-      />
-      <div className="filter-bar">
-        <div className="filter-tabs">
-          {["All orders", "In transit", "Delivered", "Cancelled"].map(
-            (item) => (
-              <button
-                key={item}
-                className={filter === item ? "active" : ""}
-                onClick={() => setFilter(item)}
-              >
-                {item}
-                {item === "All orders" && <span>12</span>}
-              </button>
-            ),
-          )}
-        </div>
-        <button className="outline-button">
-          <ArrowDownToLine /> Export
-        </button>
-      </div>
-      <OrderTable />
-    </>
-  );
-}
-function MapPreview() {
-  return (
-    <div className="track-map">
-      <div className="map-grid" />
-      <div className="map-road road-a" />
-      <div className="map-road road-b" />
-      <div className="map-road road-c" />
-      <span className="map-place place-a">Mumbai</span>
-      <span className="map-place place-b">Indore</span>
-      <span className="map-place place-c">Bengaluru</span>
-      <div className="map-route-line" />
-      <div className="map-marker marker-start">
-        <MapPin />
-      </div>
-      <div className="map-marker marker-end">
-        <Truck />
-      </div>
-      <div className="map-truck-label">
-        <span className="live-pulse" /> On the move <b>ETA 08:58 AM</b>
-      </div>
-    </div>
-  );
-}
-function Track() {
-  const [id, setId] = useState("PT-2048");
-  return (
-    <>
-      <PageHeading
-        eyebrow="Workspace / Tracking"
-        title="Track a parcel"
-        description="Real-time visibility for every shipment, every mile."
-      />
-      <div className="track-search">
-        <Search />
-        <input
-          value={id}
-          onChange={(e) => setId(e.target.value)}
-          placeholder="Enter tracking ID"
-        />
-        <button>
-          Track shipment <ArrowRight />
-        </button>
-      </div>
-      <div className="track-layout">
-        <div className="dash-card track-card">
-          <div className="track-card-heading">
-            <div>
-              <span className="track-status">
-                <i /> In transit
-              </span>
-              <h2>{id}</h2>
-              <p>Express delivery · Booked today at 08:12 AM</p>
-            </div>
-            <button className="outline-button">
-              <Bell /> Get updates
-            </button>
-          </div>
-          <MapPreview />
-          <div className="timeline">
-            <div className="timeline-item done">
-              <span>
-                <CheckCircle2 />
-              </span>
-              <div>
-                <b>Shipment picked up</b>
-                <small>Indore, MP · Today, 08:12 AM</small>
-              </div>
-            </div>
-            <div className="timeline-item done">
-              <span>
-                <CheckCircle2 />
-              </span>
-              <div>
-                <b>In transit to destination</b>
-                <small>On route · Today, 08:32 AM</small>
-              </div>
-            </div>
-            <div className="timeline-item current">
-              <span>
-                <Truck />
-              </span>
-              <div>
-                <b>Out for delivery</b>
-                <small>Expected today by 09:14 AM</small>
-              </div>
-            </div>
-            <div className="timeline-item">
-              <span>
-                <MapPin />
-              </span>
-              <div>
-                <b>Delivered</b>
-                <small>Pending</small>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="dash-card shipment-summary">
-          <h2>Shipment summary</h2>
-          <div className="summary-row">
-            <span>From</span>
-            <b>Vijay Nagar, Indore</b>
-          </div>
-          <div className="summary-row">
-            <span>To</span>
-            <b>HSR Layout, Bengaluru</b>
-          </div>
-          <div className="summary-row">
-            <span>Recipient</span>
-            <b>Rohan Mehta</b>
-          </div>
-          <div className="summary-row">
-            <span>Package</span>
-            <b>2.5 kg · Electronics</b>
-          </div>
-          <Button href={`/dashboard/orders/${id}`} variant="secondary">
-            View order details <ArrowRight />
-          </Button>
-        </div>
-      </div>
-    </>
-  );
-}
-function Book() {
-  const [submitted, setSubmitted] = useState(false);
-  return (
-    <>
-      <PageHeading
-        eyebrow="Workspace / New shipment"
-        title="Book a delivery"
-        description="Tell us where it needs to go. We’ll handle the rest."
-      />
-      <div className="booking-layout">
-        <div className="dash-card booking-card">
-          <div className="form-section">
-            <h2>Route details</h2>
-            <p>Choose your pickup and destination.</p>
-            <div className="route-fields">
-              <label>
-                <span>
-                  <MapPin /> Pickup location
-                </span>
-                <input placeholder="Search pickup address" />
-              </label>
-              <label>
-                <span>
-                  <MapPin /> Delivery location
-                </span>
-                <input placeholder="Search destination" />
-              </label>
-            </div>
-          </div>
-          <div className="form-section">
-            <h2>Package details</h2>
-            <p>Help us move it safely.</p>
-            <div className="form-grid">
-              <label>
-                Package type
-                <select defaultValue="Documents">
-                  <option>Documents</option>
-                  <option>Electronics</option>
-                  <option>Fragile goods</option>
-                  <option>Other</option>
-                </select>
-              </label>
-              <label>
-                Weight
-                <select defaultValue="Up to 2 kg">
-                  <option>Up to 2 kg</option>
-                  <option>2–5 kg</option>
-                  <option>5–10 kg</option>
-                  <option>10+ kg</option>
-                </select>
-              </label>
-            </div>
-            <label className="check-field">
-              <input type="checkbox" /> This package contains fragile items
-            </label>
-          </div>
-          <div className="form-section">
-            <h2>Delivery speed</h2>
-            <div className="speed-options">
-              <label>
-                <input type="radio" name="speed" defaultChecked />
-                <span>
-                  <b>Express</b>
-                  <small>Fastest · from ₹840</small>
-                </span>
-                <i>Recommended</i>
-              </label>
-              <label>
-                <input type="radio" name="speed" />
-                <span>
-                  <b>Standard</b>
-                  <small>Reliable · from ₹540</small>
-                </span>
-              </label>
-            </div>
-          </div>
-          {submitted && (
-            <div className="success-alert">
-              <CheckCircle2 /> Shipment draft created successfully.
-            </div>
-          )}
-          <button
-            className="dash-button primary full"
-            onClick={() => setSubmitted(true)}
-          >
-            Continue to review <ArrowRight />
-          </button>
-        </div>
-        <div className="booking-aside">
-          <div className="dash-card estimate-card">
-            <h2>Estimated cost</h2>
-            <strong>₹840</strong>
-            <span>Express delivery</span>
-            <div className="estimate-line">
-              <span>Base fare</span>
-              <b>₹720</b>
-            </div>
-            <div className="estimate-line">
-              <span>GST (18%)</span>
-              <b>₹120</b>
-            </div>
-            <div className="estimate-total">
-              <span>Total</span>
-              <b>₹840</b>
-            </div>
-            <p>
-              <ShieldCheck /> No hidden charges. Pay from your wallet after
-              review.
-            </p>
-          </div>
-          <div className="booking-tip">
-            <Zap />
-            <span>
-              <b>Pro tip</b>
-              <small>Save 12% by adding multiple shipments together.</small>
-            </span>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
-function Placeholder({
-  title,
-  icon: Icon,
-  text,
-}: {
-  title: string;
-  icon: typeof FileText;
-  text: string;
-}) {
-  return (
-    <>
-      <PageHeading eyebrow="Patel Central" title={title} description={text} />
-      <div className="empty-panel">
-        <span>
-          <Icon />
-        </span>
-        <h2>{title} is ready when you are</h2>
-        <p>
-          This workspace is designed to keep your operations clear, calm, and
-          moving forward.
-        </p>
-        <Button href="/dashboard/book">
-          <Plus /> Create a shipment
-        </Button>
-      </div>
-    </>
-  );
-}
-function OrderDetail({ id = "PT-2048" }: { id?: string }) {
-  return (
-    <>
-      <PageHeading
-        eyebrow={`Workspace / Orders / ${id}`}
-        title={`Order ${id}`}
-        description="A complete view of this shipment and its delivery progress."
-        action={
-          <Button href="/dashboard/track">
-            Track parcel <Route />
-          </Button>
-        }
-      />
-      <div className="track-layout">
-        <div className="dash-card track-card">
-          <div className="track-card-heading">
-            <div>
-              <span className="track-status">
-                <i /> In transit
-              </span>
-              <h2>{id}</h2>
-              <p>Express delivery · Booked today at 08:12 AM</p>
-            </div>
-            <button className="outline-button">
-              <ArrowDownToLine /> Download receipt
-            </button>
-          </div>
-          <MapPreview />
-          <div className="timeline">
-            <div className="timeline-item done">
-              <span>
-                <CheckCircle2 />
-              </span>
-              <div>
-                <b>Shipment picked up</b>
-                <small>Indore, MP · Today, 08:12 AM</small>
-              </div>
-            </div>
-            <div className="timeline-item done">
-              <span>
-                <CheckCircle2 />
-              </span>
-              <div>
-                <b>In transit to destination</b>
-                <small>On route · Today, 08:32 AM</small>
-              </div>
-            </div>
-            <div className="timeline-item current">
-              <span>
-                <Truck />
-              </span>
-              <div>
-                <b>Out for delivery</b>
-                <small>Expected today by 09:14 AM</small>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="dash-card shipment-summary">
-          <h2>Order summary</h2>
-          <div className="summary-row">
-            <span>Current status</span>
-            <StatusBadge status="In transit" color="blue" />
-          </div>
-          <div className="summary-row">
-            <span>From</span>
-            <b>Vijay Nagar, Indore</b>
-          </div>
-          <div className="summary-row">
-            <span>To</span>
-            <b>HSR Layout, Bengaluru</b>
-          </div>
-          <div className="summary-row">
-            <span>Recipient</span>
-            <b>Rohan Mehta</b>
-          </div>
-          <div className="summary-row">
-            <span>Package</span>
-            <b>2.5 kg · Electronics</b>
-          </div>
-          <div className="summary-row">
-            <span>Total paid</span>
-            <b>₹840</b>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
+
 export function DashboardPage({
   section,
   orderId,
@@ -868,54 +388,15 @@ export function DashboardPage({
   if (section === "orders") return <Orders />;
   if (section === "book") return <Book />;
   if (section === "track") return <Track />;
-  if (section === "wallet")
-    return (
-      <Placeholder
-        title="Wallet"
-        icon={Wallet}
-        text="Manage balance, payments, and billing history."
-      />
-    );
-  if (section === "notifications")
-    return (
-      <Placeholder
-        title="Notifications"
-        icon={Bell}
-        text="Stay ahead of every delivery update."
-      />
-    );
-  if (section === "addresses")
-    return (
-      <Placeholder
-        title="Saved addresses"
-        icon={MapPin}
-        text="Keep your pickup and delivery locations close."
-      />
-    );
-  if (section === "support")
-    return (
-      <Placeholder
-        title="Help & support"
-        icon={CircleHelp}
-        text="Real people when it matters."
-      />
-    );
-  if (section === "profile")
-    return (
-      <Placeholder
-        title="Profile"
-        icon={UserRound}
-        text="Your account details and preferences."
-      />
-    );
-  if (section === "settings")
-    return (
-      <Placeholder
-        title="Settings"
-        icon={Settings}
-        text="Configure your Patel Central workspace."
-      />
-    );
+  if (section === "language") return <Language />;
+  if (section === "terms") return <Terms />;
+  if (section === "support") return <Support />;
+  if (section === "profile") return <Profile />;
+  if (section === "settings") return <SettingsPage />;
+  if (section === "wallet") return <WalletPage />;
+  if (section === "notifications") return <NotificationsPage />;
+  if (section === "addresses") return <AddressesPage />;
+
   return <Overview />;
 }
 export function EnterpriseHome({

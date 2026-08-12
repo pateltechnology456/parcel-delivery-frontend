@@ -1,0 +1,38 @@
+export let orders = [
+  {
+    id: "PT-2048",
+    destination: "Bengaluru, KA",
+    type: "Express delivery",
+    date: "Today, 09:14 AM",
+    status: "In transit",
+    color: "blue",
+    amount: "₹840",
+  },
+  {
+    id: "PT-2047",
+    destination: "Mumbai, MH",
+    type: "Intercity standard",
+    date: "Yesterday, 04:32 PM",
+    status: "Delivered",
+    color: "green",
+    amount: "₹1,240",
+  },
+  {
+    id: "PT-2046",
+    destination: "Bhopal, MP",
+    type: "Same-day delivery",
+    date: "12 Aug, 11:18 AM",
+    status: "Delivered",
+    color: "green",
+    amount: "₹420",
+  },
+  {
+    id: "PT-2045",
+    destination: "Delhi, DL",
+    type: "Express delivery",
+    date: "11 Aug, 02:50 PM",
+    status: "Cancelled",
+    color: "red",
+    amount: "₹980",
+  },
+];
