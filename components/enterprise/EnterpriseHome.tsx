@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Profile, SettingsPage, Language, Terms, Support, WalletPage, NotificationsPage, AddressesPage } from "./DashboardViews";
 import {
   Activity,
   ArrowDownToLine,
@@ -15,7 +16,9 @@ import {
   ChevronDown,
   CircleHelp,
   CreditCard,
+  Edit,
   FileText,
+  Globe,
   Home,
   LogOut,
   MapPin,
@@ -141,6 +144,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   return (
     <div className={`dashboard-shell ${dark ? "dashboard-dark" : ""}`}>
       <aside className={`dashboard-sidebar ${open ? "sidebar-open" : ""}`}>
@@ -235,14 +239,83 @@ export function Shell({ children }: { children: React.ReactNode }) {
               <Bell />
               <i />
             </Link>
-            <div className="profile-menu">
-              <span className="profile-avatar">AK</span>
-              <span className="profile-copy">
-                <b>Ankit Kumar</b>
-                <small>Admin</small>
-              </span>
-              <ChevronDown />
+            <div className="profile-menu-wrapper" style={{ position: 'relative' }}>
+              <div
+                className="profile-menu"
+                onClick={() => setProfileOpen(true)}
+                role="button"
+                tabIndex={0}
+              >
+                <span className="profile-avatar">AK</span>
+                <span className="profile-copy">
+                  <b>Ankit Kumar</b>
+                  <small>Admin</small>
+                </span>
+                <ChevronDown />
+              </div>
+              
+              {/* Desktop Dropdown */}
+              {profileOpen && (
+                <>
+                  <div className="profile-overlay desktop-only" onClick={() => setProfileOpen(false)} />
+                  <div className="profile-dropdown desktop-only">
+                    <div className="dropdown-header">
+                      <b>Ankit Kumar</b>
+                      <small>ankit@acme.com</small>
+                    </div>
+                    <div className="dropdown-body">
+                      <Link href="/dashboard/profile" onClick={() => setProfileOpen(false)}>
+                        <Edit size={16} /> Edit Profile
+                      </Link>
+                      <Link href="/dashboard/settings" onClick={() => setProfileOpen(false)}>
+                        <Settings size={16} /> Preferences
+                      </Link>
+                      <button onClick={() => setProfileOpen(false)} className="logout-btn">
+                        <LogOut size={16} /> Logout
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
+
+            {/* Mobile Profile Sidebar */}
+            <aside className={`mobile-profile-sidebar ${profileOpen ? "sidebar-open" : ""}`}>
+              <div className="sidebar-top">
+                <div className="profile-info-large">
+                  <span className="profile-avatar large">AK</span>
+                  <div>
+                    <b>Ankit Kumar</b>
+                    <small>Admin</small>
+                  </div>
+                </div>
+                <button
+                  className="sidebar-close"
+                  onClick={() => setProfileOpen(false)}
+                  aria-label="Close profile menu"
+                >
+                  <X />
+                </button>
+              </div>
+              <div className="dash-nav mobile-profile-nav">
+                <Link href="/dashboard/profile" onClick={() => setProfileOpen(false)}>
+                  <Edit /> Edit Profile
+                </Link>
+                <Link href="/dashboard/language" onClick={() => setProfileOpen(false)}>
+                  <Globe /> Language
+                </Link>
+                <Link href="/dashboard/support" onClick={() => setProfileOpen(false)}>
+                  <CircleHelp /> Help & Support
+                </Link>
+                <Link href="/dashboard/terms" onClick={() => setProfileOpen(false)}>
+                  <FileText /> Terms & Condition
+                </Link>
+                <button className="logout-btn-mobile" onClick={() => setProfileOpen(false)}>
+                  <LogOut /> Logout
+                </button>
+              </div>
+            </aside>
+            {profileOpen && <div className="mobile-overlay-bg" onClick={() => setProfileOpen(false)} />}
           </div>
         </header>
         <main className="dashboard-content">{children}</main>
@@ -251,7 +324,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
-function PageHeading({
+export function PageHeading({
   eyebrow,
   title,
   description,
@@ -301,7 +374,7 @@ function StatCard({
     </div>
   );
 }
-function Button({
+export function Button({
   children,
   href,
   variant = "primary",
@@ -619,6 +692,8 @@ function Track() {
   );
 }
 function Book() {
+  const searchParams = useSearchParams();
+  const vehicle = searchParams?.get('vehicle') || 'bike';
   const [submitted, setSubmitted] = useState(false);
   return (
     <>
@@ -651,6 +726,14 @@ function Book() {
             <h2>Package details</h2>
             <p>Help us move it safely.</p>
             <div className="form-grid">
+              <label>
+                Vehicle type
+                <select defaultValue={vehicle}>
+                  <option value="truck">Trucks</option>
+                  <option value="bike">2 Wheeler</option>
+                  <option value="packers">Packers & Movers</option>
+                </select>
+              </label>
               <label>
                 Package type
                 <select defaultValue="Documents">
@@ -857,6 +940,7 @@ function OrderDetail({ id = "PT-2048" }: { id?: string }) {
     </>
   );
 }
+
 export function DashboardPage({
   section,
   orderId,
@@ -868,54 +952,15 @@ export function DashboardPage({
   if (section === "orders") return <Orders />;
   if (section === "book") return <Book />;
   if (section === "track") return <Track />;
-  if (section === "wallet")
-    return (
-      <Placeholder
-        title="Wallet"
-        icon={Wallet}
-        text="Manage balance, payments, and billing history."
-      />
-    );
-  if (section === "notifications")
-    return (
-      <Placeholder
-        title="Notifications"
-        icon={Bell}
-        text="Stay ahead of every delivery update."
-      />
-    );
-  if (section === "addresses")
-    return (
-      <Placeholder
-        title="Saved addresses"
-        icon={MapPin}
-        text="Keep your pickup and delivery locations close."
-      />
-    );
-  if (section === "support")
-    return (
-      <Placeholder
-        title="Help & support"
-        icon={CircleHelp}
-        text="Real people when it matters."
-      />
-    );
-  if (section === "profile")
-    return (
-      <Placeholder
-        title="Profile"
-        icon={UserRound}
-        text="Your account details and preferences."
-      />
-    );
-  if (section === "settings")
-    return (
-      <Placeholder
-        title="Settings"
-        icon={Settings}
-        text="Configure your Patel Central workspace."
-      />
-    );
+  if (section === "language") return <Language />;
+  if (section === "terms") return <Terms />;
+  if (section === "support") return <Support />;
+  if (section === "profile") return <Profile />;
+  if (section === "settings") return <SettingsPage />;
+  if (section === "wallet") return <WalletPage />;
+  if (section === "notifications") return <NotificationsPage />;
+  if (section === "addresses") return <AddressesPage />;
+
   return <Overview />;
 }
 export function EnterpriseHome({
