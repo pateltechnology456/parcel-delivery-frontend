@@ -1,6 +1,20 @@
+import { CheckCircle2 } from "lucide-react";
+import { useState } from "react";
 import { PageHeading, Button } from "../EnterpriseHome";
 
 export function SettingsPage() {
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = () => {
+    setSaving(true);
+    setTimeout(() => {
+      setSaving(false);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    }, 800);
+  };
+
   return (
     <>
       <PageHeading eyebrow="Workspace / Settings" title="Preferences" description="Manage your notification and display settings." />
@@ -20,7 +34,9 @@ export function SettingsPage() {
           </div>
         </div>
         <div style={{ marginTop: '24px' }}>
-          <Button variant="primary">Save Preferences</Button>
+          <Button variant="primary" onClick={handleSave}>
+            {saving ? "Saving..." : saved ? <><CheckCircle2 size={16} style={{display: 'inline', verticalAlign: 'text-bottom', marginRight: '4px'}}/> Saved!</> : "Save Preferences"}
+          </Button>
         </div>
       </div>
     </>

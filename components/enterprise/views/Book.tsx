@@ -2,13 +2,34 @@ import { PageHeading, Button } from "../EnterpriseHome";
 import Link from "next/link";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { ArrowRight, CheckCircle2, FileText, MapPin, Package, Route, Search, ShieldCheck, Zap } from "lucide-react";
+import { ArrowRight, CheckCircle2, FileText, MapPin, Package, Route, Search, ShieldCheck, Zap, LocateFixed } from "lucide-react";
 import { orders } from "../data";
 
 export function Book() {
   const searchParams = useSearchParams();
   const vehicle = searchParams?.get('vehicle') || 'bike';
   const [step, setStep] = useState<"details" | "payment" | "success">("details");
+  const [pickup, setPickup] = useState("");
+  const [locating, setLocating] = useState(false);
+
+  const handleLocate = () => {
+    setLocating(true);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setPickup(`Current Location (${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)})`);
+          setLocating(false);
+        },
+        () => {
+          setPickup("Current Location (Indore)");
+          setLocating(false);
+        }
+      );
+    } else {
+      setPickup("Current Location (Indore)");
+      setLocating(false);
+    }
+  };
 
   if (step === "payment") {
     return (
@@ -188,10 +209,19 @@ export function Book() {
             <p>Choose your pickup and destination.</p>
             <div className="route-fields">
               <label>
-                <span>
-                  <MapPin /> Pickup location
-                </span>
-                <input placeholder="Search pickup address" />
+                <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '6px' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#4b5b72', fontSize: '13px', fontWeight: 600 }}>
+                    <MapPin size={16} /> Pickup location
+                  </span>
+                  <button type="button" onClick={handleLocate} disabled={locating} style={{ background: 'none', border: 'none', color: '#1154d9', fontSize: '12px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', padding: 0 }}>
+                    <LocateFixed size={14} /> {locating ? "Locating..." : "Use current location"}
+                  </button>
+                </div>
+                <input 
+                  placeholder="Search pickup address" 
+                  value={pickup}
+                  onChange={(e) => setPickup(e.target.value)}
+                />
               </label>
               <label>
                 <span>

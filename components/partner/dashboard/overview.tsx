@@ -54,6 +54,15 @@ export function Incoming() {
     { id: 'PT-2941', from: 'Vijay Nagar', to: 'Bengaluru', pay: 280, dist: '4.8 km', time: '8 min' },
     { id: 'PT-2942', from: 'Bhawarkua', to: 'Palasia', pay: 140, dist: '2.1 km', time: '12 min' },
   ])
+  const [processing, setProcessing] = useState<string | null>(null);
+
+  const handleAction = (id: string, action: 'accept' | 'reject') => {
+    setProcessing(`${action}-${id}`);
+    setTimeout(() => {
+      setOrders(v => v.filter(x => x.id !== id));
+      setProcessing(null);
+    }, 600);
+  };
   return (
     <div className="partner-card incoming-card">
       <div className="partner-card-title">
@@ -75,8 +84,12 @@ export function Incoming() {
             <span><Map /> {order.dist}</span>
             <span><Clock3 /> Accept within {order.time}</span>
             <div>
-              <button onClick={() => setOrders(v => v.filter(x => x.id !== order.id))} className="reject"><X /> Reject</button>
-              <button onClick={() => setOrders(v => v.filter(x => x.id !== order.id))} className="accept"><Check /> Accept</button>
+              <button onClick={() => handleAction(order.id, 'reject')} className="reject" disabled={!!processing}>
+                {processing === `reject-${order.id}` ? '...' : <><X /> Reject</>}
+              </button>
+              <button onClick={() => handleAction(order.id, 'accept')} className="accept" disabled={!!processing}>
+                {processing === `accept-${order.id}` ? 'Accepting...' : <><Check /> Accept</>}
+              </button>
             </div>
           </div>
         </div>

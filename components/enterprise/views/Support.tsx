@@ -1,6 +1,20 @@
+import { CheckCircle2 } from "lucide-react";
+import { useState } from "react";
 import { PageHeading, Button } from "../EnterpriseHome";
 
 export function Support() {
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = () => {
+    setSaving(true);
+    setTimeout(() => {
+      setSaving(false);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    }, 800);
+  };
+
   return (
     <>
       <PageHeading eyebrow="Workspace / Support" title="Help & Support" description="Get help with your shipments, account, or technical issues." />
@@ -25,7 +39,9 @@ export function Support() {
           </div>
         </div>
         <div style={{ marginTop: '24px' }}>
-          <Button variant="primary">Submit Request</Button>
+          <Button variant="primary" onClick={handleSave}>
+            {saving ? "Sending..." : saved ? <><CheckCircle2 size={16} style={{display: 'inline', verticalAlign: 'text-bottom', marginRight: '4px'}}/> Sent!</> : "Submit Request"}
+          </Button>
         </div>
       </div>
     </>

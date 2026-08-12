@@ -7,6 +7,14 @@ import { orders } from "../data";
 
 export function Track() {
   const [id, setId] = useState("PT-2048");
+  const [tracking, setTracking] = useState(false);
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleTrack = () => {
+    setTracking(true);
+    setTimeout(() => setTracking(false), 800);
+  };
+
   return (
     <>
       <PageHeading
@@ -21,11 +29,11 @@ export function Track() {
           onChange={(e) => setId(e.target.value)}
           placeholder="Enter tracking ID"
         />
-        <button>
-          Track shipment <ArrowRight />
+        <button onClick={handleTrack} disabled={tracking}>
+          {tracking ? "Searching..." : "Track shipment"} <ArrowRight />
         </button>
       </div>
-      <div className="track-layout">
+      <div className="track-layout" style={{ opacity: tracking ? 0.5 : 1, transition: 'opacity 0.2s' }}>
         <div className="dash-card track-card">
           <div className="track-card-heading">
             <div>
@@ -35,8 +43,8 @@ export function Track() {
               <h2>{id}</h2>
               <p>Express delivery · Booked today at 08:12 AM</p>
             </div>
-            <button className="outline-button">
-              <Bell /> Get updates
+            <button className={`outline-button ${subscribed ? 'active' : ''}`} onClick={() => setSubscribed(!subscribed)}>
+              <Bell /> {subscribed ? "Updates on" : "Get updates"}
             </button>
           </div>
           <MapPreview />

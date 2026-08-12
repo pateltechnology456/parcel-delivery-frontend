@@ -621,7 +621,10 @@ function TablePage({ section }: { section: string }) {
               >
                 {row[4]}
               </Status>
-              <button className="row-more">•••</button>
+              <button className="row-more" onClick={(e) => {
+                e.preventDefault();
+                window.alert(`Action menu for ${row[0]} coming soon.`);
+              }}>•••</button>
             </div>
           ))}
         </div>
@@ -641,6 +644,18 @@ function FormPage({ section }: { section: string }) {
           : section === "vehicles"
             ? "Vehicles"
             : "Settings";
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = () => {
+    setSaving(true);
+    setTimeout(() => {
+      setSaving(false);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    }, 1000);
+  };
+
   return (
     <>
       <Heading
@@ -695,7 +710,9 @@ function FormPage({ section }: { section: string }) {
           </div>
           <div className="form-actions">
             <Button secondary>Cancel</Button>
-            <Button>Save changes</Button>
+            <button className="admin-button primary" onClick={handleSave} disabled={saving || saved}>
+              {saving ? "Saving..." : saved ? <><CheckCircle2 size={16} /> Saved</> : "Save changes"}
+            </button>
           </div>
         </div>
         <div className="admin-card admin-tip-card">

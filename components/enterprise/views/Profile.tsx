@@ -1,7 +1,21 @@
+import { CheckCircle2 } from "lucide-react";
 import { Edit } from "lucide-react";
+import { useState } from "react";
 import { PageHeading, Button } from "../EnterpriseHome";
 
 export function Profile() {
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = () => {
+    setSaving(true);
+    setTimeout(() => {
+      setSaving(false);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    }, 800);
+  };
+
   return (
     <>
       <PageHeading eyebrow="Workspace / Profile" title="Edit Profile" description="Manage your personal information and account details." />
@@ -28,7 +42,9 @@ export function Profile() {
           </div>
         </div>
         <div style={{ marginTop: '24px' }}>
-          <Button variant="primary">Save Changes</Button>
+          <Button variant="primary" onClick={handleSave}>
+            {saving ? "Saving..." : saved ? <><CheckCircle2 size={16} style={{display: 'inline', verticalAlign: 'text-bottom', marginRight: '4px'}}/> Saved!</> : "Save Changes"}
+          </Button>
         </div>
       </div>
     </>

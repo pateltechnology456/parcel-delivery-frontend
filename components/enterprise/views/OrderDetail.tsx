@@ -1,11 +1,24 @@
 import { PageHeading, Button } from "../EnterpriseHome";
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowDownToLine, CheckCircle2, Route, Truck } from "lucide-react";
+import { ArrowDownToLine, CheckCircle2, Route, Truck, Check } from "lucide-react";
 import { MapPreview } from "./MapPreview";
 import { orders } from "../data";
+import { StatusBadge } from "../EnterpriseHome";
 
 export function OrderDetail({ id = "PT-2048" }: { id?: string }) {
+  const [downloading, setDownloading] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
+
+  const handleDownload = () => {
+    setDownloading(true);
+    setTimeout(() => {
+      setDownloading(false);
+      setDownloaded(true);
+      setTimeout(() => setDownloaded(false), 2000);
+    }, 1500);
+  };
+
   return (
     <>
       <PageHeading
@@ -28,8 +41,14 @@ export function OrderDetail({ id = "PT-2048" }: { id?: string }) {
               <h2>{id}</h2>
               <p>Express delivery · Booked today at 08:12 AM</p>
             </div>
-            <button className="outline-button">
-              <ArrowDownToLine /> Download receipt
+            <button className="outline-button" onClick={handleDownload} disabled={downloading || downloaded}>
+              {downloading ? (
+                "Downloading..."
+              ) : downloaded ? (
+                <><Check size={16} /> Downloaded</>
+              ) : (
+                <><ArrowDownToLine size={16} /> Download receipt</>
+              )}
             </button>
           </div>
           <MapPreview />
