@@ -3,9 +3,21 @@ import Link from "next/link";
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { StatusBadge } from "../EnterpriseHome";
-import { orders } from "../data";
+import { orders as defaultOrders } from "../data";
+import { useEffect } from "react";
 
 export function OrderTable() {
+  const [orders, setOrders] = useState(defaultOrders);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('mock_orders');
+    if (saved) {
+      setOrders(JSON.parse(saved));
+    } else {
+      localStorage.setItem('mock_orders', JSON.stringify(defaultOrders));
+    }
+  }, []);
+
   return (
     <div className="dash-card orders-card">
       <div className="card-heading">

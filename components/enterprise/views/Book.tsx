@@ -18,6 +18,8 @@ export function Book() {
   const [locating, setLocating] = useState(false);
   const [basePrice, setBasePrice] = useState(540);
   const [speed, setSpeed] = useState("express");
+  const [processing, setProcessing] = useState(false);
+  const [orderId, setOrderId] = useState("");
 
   const handleLocate = () => {
     setLocating(true);
@@ -110,21 +112,37 @@ export function Book() {
             </div>
             <button
               className="dash-button primary full"
+              disabled={processing}
+              style={{ marginTop: '24px', opacity: processing ? 0.7 : 1 }}
               onClick={() => {
-                const newId = `PT-${2050 + Math.floor(Math.random() * 100)}`;
-                orders.unshift({
-                  id: newId,
-                  destination: "New Delhi, DL",
-                  type: vehicle === "bike" ? "Local delivery" : "Express delivery",
-                  date: "Today, Just now",
-                  status: "Pending",
-                  color: "orange",
-                  amount: `₹${total}`,
-                });
-                setStep("success");
+                setProcessing(true);
+                setTimeout(() => {
+                  const newId = `PT-${2050 + Math.floor(Math.random() * 100)}`;
+                  setOrderId(newId);
+                  
+                  const newOrder = {
+                    id: newId,
+                    destination: dropoff || "New Delhi, DL",
+                    type: vehicle === "bike" ? "Local delivery" : "Express delivery",
+                    date: "Today, Just now",
+                    status: "Pending",
+                    color: "orange",
+                    amount: `₹${total}`,
+                  };
+                  
+                  orders.unshift(newOrder);
+                  
+                  const savedOrders = JSON.parse(localStorage.getItem('mock_orders') || '[]');
+                  savedOrders.unshift(newOrder);
+                  localStorage.setItem('mock_orders', JSON.stringify(savedOrders));
+                  localStorage.removeItem('estimate_data');
+
+                  setProcessing(false);
+                  setStep("success");
+                }, 2000);
               }}
             >
-              Confirm Booking (Pay ₹{total}) <ArrowRight />
+              {processing ? "Processing Payment..." : `Confirm Booking (Pay ₹${total})`} <ArrowRight />
             </button>
             <button
               className="dash-button secondary full"
@@ -187,7 +205,7 @@ export function Book() {
               
               <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '16px', borderBottom: '1px dashed #dfe7f1', marginBottom: '16px' }}>
                 <span style={{ color: '#4b5b72' }}>Order ID</span>
-                <b style={{ color: '#0b2a62' }}>PT-2051</b>
+                <b style={{ color: '#0b2a62' }}>{orderId}</b>
               </div>
               
               <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '16px', borderBottom: '1px dashed #dfe7f1', marginBottom: '16px' }}>
@@ -197,7 +215,7 @@ export function Book() {
               
               <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '16px', borderBottom: '1px dashed #dfe7f1', marginBottom: '16px' }}>
                 <span style={{ color: '#4b5b72' }}>Route</span>
-                <b style={{ color: '#0b2a62' }}>Indore to New Delhi</b>
+                <b style={{ color: '#0b2a62', textAlign: 'right', maxWidth: '200px' }}>{pickup.split(',')[0]} to {dropoff.split(',')[0]}</b>
               </div>
               
               <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '16px', borderBottom: '1px dashed #dfe7f1', marginBottom: '24px' }}>
