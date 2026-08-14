@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { ArrowRight, CheckCircle2, FileText, MapPin, Package, Route, Search, ShieldCheck, Zap, LocateFixed } from "lucide-react";
 import { orders } from "../data";
+import toast from "react-hot-toast";
 
 export function Book() {
   const searchParams = useSearchParams();
@@ -63,6 +64,18 @@ export function Book() {
   const selectedPrice = speed === "express" ? expressPrice : standardPrice;
   const gst = Math.floor(selectedPrice * 0.18);
   const total = selectedPrice + gst;
+
+  const handleNextStep = () => {
+    if (!pickup.trim() || !dropoff.trim() || !name.trim() || !phone.trim()) {
+      toast.error("Please fill in all the sender and route details.");
+      return;
+    }
+    if (phone.length !== 10) {
+      toast.error("Please enter a valid 10-digit phone number.");
+      return;
+    }
+    setStep("payment");
+  };
 
   if (step === "payment") {
     return (
@@ -252,9 +265,10 @@ export function Book() {
               <label>
                 Phone
                 <input 
-                  placeholder="Sender phone" 
+                  type="tel"
+                  placeholder="Sender 10-digit phone" 
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
                 />
               </label>
             </div>
@@ -346,10 +360,10 @@ export function Book() {
           </div>
           <button
             className="dash-button primary full"
-            onClick={() => setStep("payment")}
+            onClick={handleNextStep}
             style={{ marginTop: '24px' }}
           >
-            Continue to payment <ArrowRight />
+            Review Payment <ArrowRight />
           </button>
         </div>
         <div className="booking-aside">

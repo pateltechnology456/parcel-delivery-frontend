@@ -28,6 +28,7 @@ import {
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import toast from "react-hot-toast";
 
 const blue = "#0057FF";
 
@@ -259,7 +260,7 @@ export function AuthFooter({ children }: { children: React.ReactNode }) {
 
 const loginSchema = z.object({
   identifier: z.string().min(1, "Enter your email or mobile number"),
-  otp: z.string().min(6, "Enter a valid 6-digit OTP"),
+  otp: z.string().regex(/^\d{6}$/, "Enter a valid 6-digit OTP"),
   remember: z.boolean().optional(),
 });
 type LoginData = z.infer<typeof loginSchema>;
@@ -291,8 +292,15 @@ export function LoginForm() {
       router.push(redirect || "/dashboard");
     }, 500);
   };
+
+  const onError = (formErrors: any) => {
+    Object.values(formErrors).forEach((err: any) => {
+      if (err?.message) toast.error(err.message as string);
+    });
+  };
+
   return (
-    <form className="auth-form" onSubmit={handleSubmit(submit)} noValidate>
+    <form className="auth-form" onSubmit={handleSubmit(submit, onError)} noValidate>
       {notice && (
         <div className="success-alert">
           <CheckCircle2 /> {notice}
@@ -313,12 +321,16 @@ export function LoginForm() {
         <Field
           label="6-digit OTP"
           icon={KeyRound}
-          error={errors.otp?.message}
         >
           <input
+            type="tel"
             placeholder="123456"
             maxLength={6}
             {...register("otp")}
+            onChange={(e) => {
+              e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
+              register("otp").onChange(e);
+            }}
           />
         </Field>
         <button 

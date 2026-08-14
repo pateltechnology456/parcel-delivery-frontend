@@ -1,5 +1,6 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
+import { Toaster } from 'react-hot-toast'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -39,6 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-background">
       <body className="font-sans antialiased" suppressHydrationWarning>
+        <Toaster position="bottom-right" />
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

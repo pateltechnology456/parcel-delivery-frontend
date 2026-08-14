@@ -1,6 +1,7 @@
 import { ArrowRight, ChevronDown, MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export function EstimateForm() {
   const router = useRouter();
@@ -9,14 +10,17 @@ export function EstimateForm() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [type, setType] = useState("");
-  const [error, setError] = useState("");
 
   const handleSubmit = (e: React.MouseEvent) => {
     e.preventDefault();
-    setError("");
 
     if (!pickup.trim() || !dropoff.trim() || !name.trim() || !phone.trim() || !type) {
-      setError("Please fill in all the details to get an estimate.");
+      toast.error("Please fill in all the details to get an estimate.");
+      return;
+    }
+
+    if (phone.length !== 10) {
+      toast.error("Please enter a valid 10-digit phone number.");
       return;
     }
 
@@ -34,7 +38,6 @@ export function EstimateForm() {
           <ChevronDown size={14} className="tab-chevron" />
         </div>
         <div className="estimate-form">
-          {error && <div style={{ color: 'red', fontSize: '13px', marginBottom: '12px' }}>{error}</div>}
           <div className="estimate-field">
             <label>Pickup Address <span className="text-red-500">*</span></label>
             <input 
@@ -71,10 +74,10 @@ export function EstimateForm() {
           <div className="estimate-field">
             <label>Phone Number <span className="text-red-500">*</span></label>
             <input 
-              type="text" 
-              placeholder="Enter your Phone Nu..." 
+              type="tel" 
+              placeholder="Enter your 10-digit Phone No" 
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
             />
           </div>
           <div className="field-divider" />
