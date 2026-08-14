@@ -6,7 +6,7 @@ import { Check, CheckCircle2, ChevronRight, Mail, Phone, UserRound, Truck, Badge
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Field, SocialButtons, SubmitButton, AuthFooter, FormError } from "./auth-shell";
+import { Field, SocialButtons, SubmitButton, AuthFooter, FormError, OtpInput } from "./auth-shell";
 import { KeyRound } from "lucide-react";
 
 export const partnerRegisterSchema = z
@@ -31,6 +31,7 @@ export function PartnerRegisterForm() {
   const {
     register,
     handleSubmit,
+    setValue,
     watch,
     formState: { errors, isSubmitting },
   } = useForm<PartnerRegisterData>({
@@ -38,6 +39,7 @@ export function PartnerRegisterForm() {
     defaultValues: { terms: false },
   });
   const [notice, setNotice] = useState("");
+  const otpValue = watch("otp") || "";
   const submit = async () => {
     await new Promise((r) => setTimeout(r, 700));
     setNotice(
@@ -108,25 +110,19 @@ export function PartnerRegisterForm() {
         <input placeholder="DL-XXXX-XXXXXXX" {...register("licenseNumber")} />
       </Field>
 
-      <div className="otp-field-container" style={{ position: 'relative' }}>
-        <Field
-          label="6-digit OTP"
-          icon={KeyRound}
-          error={errors.otp?.message}
-        >
-          <input
-            placeholder="123456"
-            maxLength={6}
-            {...register("otp")}
-          />
-        </Field>
-        <button 
-          type="button"
-          onClick={() => setNotice("OTP sent to your number!")}
-          style={{ position: 'absolute', right: '12px', top: '38px', background: 'none', border: 'none', color: '#1d6bff', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}
-        >
-          Get OTP
-        </button>
+      <div className="otp-field-container" style={{ position: 'relative', marginTop: '16px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+          <label style={{ fontSize: '13px', fontWeight: 600, color: '#0b2a62' }}>6-digit OTP</label>
+          <button 
+            type="button"
+            onClick={() => setNotice("OTP sent to your number!")}
+            style={{ background: 'none', border: 'none', color: '#1d6bff', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}
+          >
+            Get OTP
+          </button>
+        </div>
+        <OtpInput value={otpValue} onChange={(val) => setValue("otp", val, { shouldValidate: true })} />
+        <FormError message={errors.otp?.message} />
       </div>
       <label className="terms-label">
         <input type="checkbox" {...register("terms")} />
