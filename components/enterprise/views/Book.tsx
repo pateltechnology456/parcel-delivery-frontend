@@ -1,6 +1,6 @@
 import { PageHeading, Button } from "../EnterpriseHome";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { ArrowRight, CheckCircle2, FileText, MapPin, Package, Route, Search, ShieldCheck, Zap, LocateFixed } from "lucide-react";
 import { orders } from "../data";
@@ -10,7 +10,13 @@ export function Book() {
   const vehicle = searchParams?.get('vehicle') || 'bike';
   const [step, setStep] = useState<"details" | "payment" | "success">("details");
   const [pickup, setPickup] = useState("");
+  const [dropoff, setDropoff] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [vehicleType, setVehicleType] = useState(vehicle);
   const [locating, setLocating] = useState(false);
+  const [basePrice, setBasePrice] = useState(540);
+  const [speed, setSpeed] = useState("express");
 
   const handleLocate = () => {
     setLocating(true);
@@ -30,6 +36,33 @@ export function Book() {
       setLocating(false);
     }
   };
+
+  useEffect(() => {
+    if (searchParams?.get('locate') === 'true' && !pickup && !locating) {
+      handleLocate();
+    }
+    const stored = localStorage.getItem("estimate_data");
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (parsed.pickup) setPickup(parsed.pickup);
+      if (parsed.dropoff) setDropoff(parsed.dropoff);
+      if (parsed.name) setName(parsed.name);
+      if (parsed.phone) setPhone(parsed.phone);
+      
+      const pLen = parsed.pickup ? parsed.pickup.length : 20;
+      const dLen = parsed.dropoff ? parsed.dropoff.length : 20;
+      const dynamicScooter = Math.floor((pLen + dLen) * 1.5 + 20);
+      const dynamicTruck = Math.floor(dynamicScooter * 2.2);
+      setBasePrice(vehicle === 'truck' ? dynamicTruck : dynamicScooter);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  const expressPrice = Math.floor(basePrice * 1.5);
+  const standardPrice = basePrice;
+  const selectedPrice = speed === "express" ? expressPrice : standardPrice;
+  const gst = Math.floor(selectedPrice * 0.18);
+  const total = selectedPrice + gst;
 
   if (step === "payment") {
     return (
@@ -73,12 +106,12 @@ export function Book() {
                   date: "Today, Just now",
                   status: "Pending",
                   color: "orange",
-                  amount: "₹840",
+                  amount: `₹${total}`,
                 });
                 setStep("success");
               }}
             >
-              Confirm Booking (Pay ₹840) <ArrowRight />
+              Confirm Booking (Pay ₹{total}) <ArrowRight />
             </button>
             <button
               className="dash-button secondary full"
@@ -91,19 +124,19 @@ export function Book() {
           <div className="booking-aside">
             <div className="dash-card estimate-card">
               <h2>Estimated cost</h2>
-              <strong>₹840</strong>
-              <span>Express delivery</span>
+              <strong>₹{total}</strong>
+              <span style={{ textTransform: 'capitalize' }}>{speed} delivery</span>
               <div className="estimate-line">
                 <span>Base fare</span>
-                <b>₹720</b>
+                <b>₹{selectedPrice}</b>
               </div>
               <div className="estimate-line">
                 <span>GST (18%)</span>
-                <b>₹120</b>
+                <b>₹{gst}</b>
               </div>
               <div className="estimate-total">
                 <span>Total</span>
-                <b>₹840</b>
+                <b>₹{total}</b>
               </div>
               <p>
                 <ShieldCheck /> Secure payments powered by Razorpay.
@@ -169,19 +202,19 @@ export function Book() {
           <div className="booking-aside">
             <div className="dash-card estimate-card">
               <h2>Amount Paid</h2>
-              <strong>₹840</strong>
+              <strong>₹{total}</strong>
               <div style={{ marginTop: '16px', borderTop: '1px solid #dfe7f1', paddingTop: '16px' }}>
                 <div className="estimate-line">
                   <span>Base fare</span>
-                  <b>₹720</b>
+                  <b>₹{selectedPrice}</b>
                 </div>
                 <div className="estimate-line">
                   <span>GST (18%)</span>
-                  <b>₹120</b>
+                  <b>₹{gst}</b>
                 </div>
                 <div className="estimate-total">
                   <span>Total</span>
-                  <b>₹840</b>
+                  <b>₹{total}</b>
                 </div>
               </div>
               <div style={{ marginTop: '16px', padding: '12px', background: '#f5f8fc', borderRadius: '6px', fontSize: '11px', color: '#4b5b72', display: 'flex', gap: '8px' }}>
@@ -205,6 +238,27 @@ export function Book() {
       <div className="booking-layout">
         <div className="dash-card booking-card">
           <div className="form-section">
+            <h2>Sender details</h2>
+            <p>Who is sending this package?</p>
+            <div className="form-grid" style={{ marginBottom: '24px' }}>
+              <label>
+                Name
+                <input 
+                  placeholder="Sender name" 
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </label>
+              <label>
+                Phone
+                <input 
+                  placeholder="Sender phone" 
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+              </label>
+            </div>
+            
             <h2>Route details</h2>
             <p>Choose your pickup and destination.</p>
             <div className="route-fields">
@@ -227,7 +281,11 @@ export function Book() {
                 <span>
                   <MapPin /> Delivery location
                 </span>
-                <input placeholder="Search destination" />
+                <input 
+                  placeholder="Search destination" 
+                  value={dropoff}
+                  onChange={(e) => setDropoff(e.target.value)}
+                />
               </label>
             </div>
           </div>
@@ -237,7 +295,7 @@ export function Book() {
             <div className="form-grid">
               <label>
                 Vehicle type
-                <select defaultValue={vehicle}>
+                <select value={vehicleType} onChange={(e) => setVehicleType(e.target.value)}>
                   <option value="truck">Trucks</option>
                   <option value="bike">2 Wheeler</option>
                   <option value="packers">Packers & Movers</option>
@@ -270,18 +328,18 @@ export function Book() {
             <h2>Delivery speed</h2>
             <div className="speed-options">
               <label>
-                <input type="radio" name="speed" defaultChecked />
+                <input type="radio" name="speed" checked={speed === "express"} onChange={() => setSpeed("express")} />
                 <span>
                   <b>Express</b>
-                  <small>Fastest · from ₹840</small>
+                  <small>Fastest · base ₹{expressPrice}</small>
                 </span>
                 <i>Recommended</i>
               </label>
               <label>
-                <input type="radio" name="speed" />
+                <input type="radio" name="speed" checked={speed === "standard"} onChange={() => setSpeed("standard")} />
                 <span>
                   <b>Standard</b>
-                  <small>Reliable · from ₹540</small>
+                  <small>Reliable · base ₹{standardPrice}</small>
                 </span>
               </label>
             </div>

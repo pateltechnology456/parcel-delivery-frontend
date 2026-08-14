@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Profile } from "./views/Profile";
@@ -117,9 +117,15 @@ function BottomNav() {
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem("mock_current_user");
+    window.location.href = "/";
+  };
   return (
     <div className={`dashboard-shell ${dark ? "dashboard-dark" : ""}`}>
       <aside className={`dashboard-sidebar ${open ? "sidebar-open" : ""}`}>
@@ -245,7 +251,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
                       <Link href="/dashboard/settings" onClick={() => setProfileOpen(false)}>
                         <Settings size={16} /> Preferences
                       </Link>
-                      <button onClick={() => setProfileOpen(false)} className="logout-btn">
+                      <button onClick={handleLogout} className="logout-btn">
                         <LogOut size={16} /> Logout
                       </button>
                     </div>
@@ -285,7 +291,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
                 <Link href="/dashboard/terms" onClick={() => setProfileOpen(false)}>
                   <FileText /> Terms & Condition
                 </Link>
-                <button className="logout-btn-mobile" onClick={() => setProfileOpen(false)}>
+                <button className="logout-btn-mobile" onClick={handleLogout}>
                   <LogOut /> Logout
                 </button>
               </div>

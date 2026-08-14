@@ -22,7 +22,7 @@ export function CustomerHome({
           <div className="retail-main">
           {/* Top Header */}
           <div className="retail-header">
-            <div className="retail-location-picker">
+            <Link href="/dashboard/book?locate=true" className="retail-location-picker" style={{ textDecoration: 'none', color: 'inherit' }}>
               <span className="location-icon green">
                 <ArrowUpRight size={16} />
               </span>
@@ -31,7 +31,7 @@ export function CustomerHome({
                 <small>Solanki Nagar, Madhya Pradesh 452011, India</small>
               </div>
               <ChevronRight size={18} className="chevron" />
-            </div>
+            </Link>
           </div>
 
           {/* Services Grid */}

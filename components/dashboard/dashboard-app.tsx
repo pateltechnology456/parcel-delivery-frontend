@@ -1,6 +1,8 @@
 "use client";
 
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { CustomerHome } from "../customer/CustomerHome";
 import { EnterpriseHome } from "../enterprise/EnterpriseHome";
 
@@ -12,8 +14,15 @@ export default function DashboardApp({
   orderId?: string;
 }) {
   const { user, loading } = useCurrentUser();
+  const router = useRouter();
 
-  if (loading) {
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
+
+  if (loading || !user) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#f5f8fc' }}>
         <div className="loader"></div>

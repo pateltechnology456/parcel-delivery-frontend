@@ -438,6 +438,12 @@ export default function Page() {
   const router = useRouter();
 
   useEffect(() => {
+    const user = localStorage.getItem("mock_current_user");
+    if (user) {
+      router.push("/dashboard");
+      return;
+    }
+
     if (typeof window !== "undefined" && window.innerWidth <= 768) {
       router.push("/login");
     }

@@ -602,7 +602,7 @@ button, input { font: inherit; }
 }
 .retail-main {
   padding: 16px;
-  max-width: 480px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 .retail-header {
@@ -649,6 +649,16 @@ button, input { font: inherit; }
   gap: 16px;
   margin-bottom: 24px;
 }
+
+@media (min-width: 768px) {
+  .retail-main {
+    padding: 32px;
+  }
+  .retail-services-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+}
 .retail-service-card {
   background: #fff;
   border-radius: 20px;
@@ -665,6 +675,13 @@ button, input { font: inherit; }
   align-items: center;
   padding: 24px 20px;
 }
+@media (min-width: 768px) {
+  .retail-services-grid > .retail-service-card:nth-child(3) {
+    grid-column: span 1;
+    flex-direction: column;
+    padding: 20px 16px;
+  }
+}
 .service-image-placeholder {
   flex: 1;
   display: flex;
@@ -679,6 +696,12 @@ button, input { font: inherit; }
 .retail-services-grid > .retail-service-card:nth-child(3) .service-image-placeholder img {
   max-width: 100px;
   max-height: 100px;
+}
+@media (min-width: 768px) {
+  .retail-services-grid > .retail-service-card:nth-child(3) .service-image-placeholder img {
+    max-width: 80px;
+    max-height: 80px;
+  }
 }
 .service-content {
   display: flex;

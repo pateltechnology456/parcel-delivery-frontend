@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -266,6 +266,7 @@ type LoginData = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const {
     register,
     handleSubmit,
@@ -286,7 +287,8 @@ export function LoginForm() {
     setNotice(`Welcome back. Redirecting...`);
     
     setTimeout(() => {
-      router.push("/dashboard");
+      const redirect = searchParams?.get("redirect");
+      router.push(redirect || "/dashboard");
     }, 500);
   };
   return (
