@@ -1028,3 +1028,54 @@ button, input { font: inherit; }
   }
 }
 
+/* Sidebar Scroll & Sleek Scrollbar */
+.partner-sidebar,
+.dashboard-sidebar,
+.admin-sidebar {
+  max-height: 100vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+.partner-sidebar::-webkit-scrollbar,
+.dashboard-sidebar::-webkit-scrollbar,
+.admin-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.partner-sidebar::-webkit-scrollbar-track,
+.dashboard-sidebar::-webkit-scrollbar-track,
+.admin-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.partner-sidebar::-webkit-scrollbar-thumb,
+.dashboard-sidebar::-webkit-scrollbar-thumb,
+.admin-sidebar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 99px;
+}
+
+.partner-sidebar::-webkit-scrollbar-thumb:hover,
+.dashboard-sidebar::-webkit-scrollbar-thumb:hover,
+.admin-sidebar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.partner-sidebar-top,
+.partner-profile-card,
+.partner-online-toggle,
+.partner-sidebar-bottom,
+.sidebar-top,
+.sidebar-bottom {
+  flex-shrink: 0;
+}
+
+.partner-nav,
+.dash-nav {
+  flex-shrink: 0;
+}
+

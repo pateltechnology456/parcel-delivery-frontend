@@ -3,6 +3,7 @@
 import type React from 'react'
 import Link from 'next/link'
 import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   Bell, Bike, ChevronDown, CircleHelp, CreditCard, FileText, Gauge,
   LayoutDashboard, ListChecks, LogOut, Menu, Moon, Navigation, PanelLeftClose,
@@ -33,10 +34,30 @@ function Shell({ children }: { children: React.ReactNode }) {
   const [online, setOnline] = useState(true)
   return (
     <div className={`partner-shell ${dark ? 'partner-dark' : ''}`}>
+      <AnimatePresence>
+        {open && (
+          <motion.button
+            key="overlay"
+            aria-label="Close navigation"
+            className="partner-overlay"
+            onClick={() => setOpen(false)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          />
+        )}
+      </AnimatePresence>
       <aside className={`partner-sidebar ${open ? 'open' : ''}`}>
         <div className="partner-sidebar-top">
           <Brand />
-          <button className="partner-close" onClick={() => setOpen(false)}><PanelLeftClose /></button>
+          <motion.button
+            className="partner-close"
+            onClick={() => setOpen(false)}
+            whileTap={{ scale: 0.9 }}
+          >
+            <PanelLeftClose />
+          </motion.button>
         </div>
         <div className="partner-profile-card">
           <span>AK</span>
@@ -44,12 +65,23 @@ function Shell({ children }: { children: React.ReactNode }) {
           <ChevronDown />
         </div>
         <div className="partner-online-toggle">
-          <span className={online ? 'is-online' : ''} />
+          <motion.span
+            className={online ? 'is-online' : ''}
+            animate={{ backgroundColor: online ? '#22c55e' : '#94a3b8' }}
+            transition={{ duration: 0.3 }}
+          />
           <div>
             <b>{online ? 'You are online' : 'You are offline'}</b>
             <small>{online ? 'Ready for deliveries' : 'Go online to receive orders'}</small>
           </div>
-          <button aria-label="Toggle online status" onClick={() => setOnline(v => !v)} className={online ? 'active' : ''}><i /></button>
+          <motion.button
+            aria-label="Toggle online status"
+            onClick={() => setOnline(v => !v)}
+            className={online ? 'active' : ''}
+            whileTap={{ scale: 0.9 }}
+          >
+            <i />
+          </motion.button>
         </div>
         <nav className="partner-nav">
           <p>Main menu</p>
@@ -74,16 +106,39 @@ function Shell({ children }: { children: React.ReactNode }) {
           <Link className="partner-logout" href="/login"><LogOut /> Sign out</Link>
         </div>
       </aside>
-      {open && <button aria-label="Close navigation" className="partner-overlay" onClick={() => setOpen(false)} />}
+
       <main className="partner-main">
         <header className="partner-topbar">
-          <button aria-label="Open navigation" className="partner-mobile-menu" onClick={() => setOpen(true)}><Menu /></button>
+          <motion.button
+            aria-label="Open navigation"
+            className="partner-mobile-menu"
+            onClick={() => setOpen(true)}
+            whileTap={{ scale: 0.88 }}
+          >
+            <Menu />
+          </motion.button>
           <div className="partner-search">
             <Gauge /><input placeholder="Search orders, earnings..." /><kbd>⌘ K</kbd>
           </div>
           <div className="partner-top-actions">
-            <button className="partner-icon-button" onClick={() => setDark(v => !v)} aria-label="Toggle theme">{dark ? <Sun /> : <Moon />}</button>
-            <button className="partner-icon-button partner-bell" aria-label="Notifications"><Bell /><i /></button>
+            <motion.button
+              className="partner-icon-button"
+              onClick={() => setDark(v => !v)}
+              aria-label="Toggle theme"
+              whileTap={{ scale: 0.88, rotate: 20 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 18 }}
+            >
+              {dark ? <Sun /> : <Moon />}
+            </motion.button>
+            <motion.button
+              className="partner-icon-button partner-bell"
+              aria-label="Notifications"
+              whileTap={{ scale: 0.88 }}
+              animate={{ rotate: [0, -8, 8, -4, 4, 0] }}
+              transition={{ duration: 0.5, delay: 2, repeat: Infinity, repeatDelay: 8 }}
+            >
+              <Bell /><i />
+            </motion.button>
             <div className="partner-user">
               <span>AK</span>
               <div><b>Arjun Kumar</b><small>ID: PT-DRV-2841</small></div>
@@ -91,7 +146,19 @@ function Shell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
         </header>
-        <div className="partner-content">{children}</div>
+        <div className="partner-content">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={typeof window !== 'undefined' ? window.location.pathname : 'page'}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </main>
     </div>
   )
@@ -139,8 +206,27 @@ function PartnerBottomNav({ section }: { section?: string }) {
         const isActive = section === key || (!section && !key)
         return (
           <Link key={href} href={href} className={`${isActive ? 'pnav-active' : ''}${center ? ' pnav-center' : ''}`} aria-label={label}>
-            <Icon />
-            {!center && <span>{label}</span>}
+            <motion.div
+              whileTap={{ scale: 0.82 }}
+              whileHover={{ scale: 1.12 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}
+            >
+              <motion.div
+                animate={isActive ? { y: -2 } : { y: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              >
+                <Icon />
+              </motion.div>
+              {!center && (
+                <motion.span
+                  animate={isActive ? { opacity: 1, scale: 1 } : { opacity: 0.6, scale: 0.9 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {label}
+                </motion.span>
+              )}
+            </motion.div>
           </Link>
         )
       })}
