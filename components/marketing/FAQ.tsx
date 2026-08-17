@@ -25,7 +25,7 @@ export const faqs = [
 export function FAQ() {
   const [active, setActive] = useState(0);
   return (
-    <section className="section faq-section" id="faq">
+    <section className="section faq-section" id="faq" suppressHydrationWarning>
       <div className="container faq-layout">
         <div>
           <div className="eyebrow blue-eyebrow">Questions, answered</div>

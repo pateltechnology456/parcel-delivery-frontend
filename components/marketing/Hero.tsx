@@ -172,6 +172,7 @@ export function Hero() {
 
         {/* Central Glassmorphism Action Widget */}
         <motion.div
+          suppressHydrationWarning
           initial={{ opacity: 0, y: 28, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
