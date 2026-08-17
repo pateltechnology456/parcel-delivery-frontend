@@ -602,7 +602,7 @@ button, input { font: inherit; }
 }
 .retail-main {
   padding: 16px;
-  max-width: 480px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 .retail-header {
@@ -649,6 +649,16 @@ button, input { font: inherit; }
   gap: 16px;
   margin-bottom: 24px;
 }
+
+@media (min-width: 768px) {
+  .retail-main {
+    padding: 32px;
+  }
+  .retail-services-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+}
 .retail-service-card {
   background: #fff;
   border-radius: 20px;
@@ -665,6 +675,13 @@ button, input { font: inherit; }
   align-items: center;
   padding: 24px 20px;
 }
+@media (min-width: 768px) {
+  .retail-services-grid > .retail-service-card:nth-child(3) {
+    grid-column: span 1;
+    flex-direction: column;
+    padding: 20px 16px;
+  }
+}
 .service-image-placeholder {
   flex: 1;
   display: flex;
@@ -679,6 +696,12 @@ button, input { font: inherit; }
 .retail-services-grid > .retail-service-card:nth-child(3) .service-image-placeholder img {
   max-width: 100px;
   max-height: 100px;
+}
+@media (min-width: 768px) {
+  .retail-services-grid > .retail-service-card:nth-child(3) .service-image-placeholder img {
+    max-width: 80px;
+    max-height: 80px;
+  }
 }
 .service-content {
   display: flex;
@@ -1002,6 +1025,67 @@ button, input { font: inherit; }
 @media (min-width: 769px) {
   .mobile-profile-sidebar, .mobile-overlay-bg {
     display: none !important;
+  }
+}
+
+/* Sidebar Scroll & Sleek Scrollbar */
+.partner-sidebar,
+.dashboard-sidebar,
+.admin-sidebar {
+  max-height: 100vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+.partner-sidebar::-webkit-scrollbar,
+.dashboard-sidebar::-webkit-scrollbar,
+.admin-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.partner-sidebar::-webkit-scrollbar-track,
+.dashboard-sidebar::-webkit-scrollbar-track,
+.admin-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.partner-sidebar::-webkit-scrollbar-thumb,
+.dashboard-sidebar::-webkit-scrollbar-thumb,
+.admin-sidebar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 99px;
+}
+
+.partner-sidebar::-webkit-scrollbar-thumb:hover,
+.dashboard-sidebar::-webkit-scrollbar-thumb:hover,
+.admin-sidebar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.partner-sidebar-top,
+.partner-profile-card,
+.partner-online-toggle,
+.partner-sidebar-bottom,
+.sidebar-top,
+.sidebar-bottom {
+  flex-shrink: 0;
+}
+
+.partner-nav,
+.dash-nav {
+  flex-shrink: 0;
+}
+
+@media (max-width: 860px) {
+  .desktop-nav-links,
+  .desktop-nav-actions {
+    display: none !important;
+  }
+  .mobile-menu-btn {
+    display: block !important;
   }
 }
 

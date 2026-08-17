@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Profile } from "./views/Profile";
@@ -54,7 +54,6 @@ import {
 const nav = [
   { href: "/dashboard", label: "Overview", icon: Home },
   { href: "/dashboard/orders", label: "My orders", icon: Package },
-  { href: "/dashboard/book", label: "Book a delivery", icon: Plus },
   { href: "/dashboard/track", label: "Track parcel", icon: Route },
   { href: "/dashboard/wallet", label: "Wallet", icon: Wallet },
 ];
@@ -88,7 +87,6 @@ function BottomNav() {
   const bottomLinks = [
     { href: "/dashboard", label: "Home", icon: Home },
     { href: "/dashboard/orders", label: "Orders", icon: Package },
-    { href: "/dashboard/book", label: "Book", icon: Plus },
     { href: "/dashboard/track", label: "Track", icon: Route },
     { href: "/dashboard/wallet", label: "Wallet", icon: Wallet },
   ];
@@ -117,9 +115,17 @@ function BottomNav() {
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem("mock_current_user");
+    localStorage.removeItem("active_booking_draft");
+    localStorage.removeItem("estimate_data");
+    window.location.href = "/login";
+  };
   return (
     <div className={`dashboard-shell ${dark ? "dashboard-dark" : ""}`}>
       <aside className={`dashboard-sidebar ${open ? "sidebar-open" : ""}`}>
@@ -245,7 +251,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
                       <Link href="/dashboard/settings" onClick={() => setProfileOpen(false)}>
                         <Settings size={16} /> Preferences
                       </Link>
-                      <button onClick={() => setProfileOpen(false)} className="logout-btn">
+                      <button onClick={handleLogout} className="logout-btn">
                         <LogOut size={16} /> Logout
                       </button>
                     </div>
@@ -285,7 +291,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
                 <Link href="/dashboard/terms" onClick={() => setProfileOpen(false)}>
                   <FileText /> Terms & Condition
                 </Link>
-                <button className="logout-btn-mobile" onClick={() => setProfileOpen(false)}>
+                <button className="logout-btn-mobile" onClick={handleLogout}>
                   <LogOut /> Logout
                 </button>
               </div>
@@ -353,18 +359,28 @@ export function Button({
   children,
   href,
   variant = "primary",
+  onClick,
+  style,
+  disabled,
+  className = "",
 }: {
   children: React.ReactNode;
   href?: string;
   variant?: "primary" | "secondary";
+  onClick?: () => void;
+  style?: React.CSSProperties;
+  disabled?: boolean;
+  className?: string;
 }) {
-  const className = `dash-button ${variant}`;
+  const combinedClass = `dash-button ${variant} ${className}`.trim();
   return href ? (
-    <Link href={href} className={className}>
+    <Link href={href} className={combinedClass} style={style}>
       {children}
     </Link>
   ) : (
-    <button className={className}>{children}</button>
+    <button type="button" className={combinedClass} onClick={onClick} style={style} disabled={disabled}>
+      {children}
+    </button>
   );
 }
 export function StatusBadge({ status, color }: { status: string; color: string }) {

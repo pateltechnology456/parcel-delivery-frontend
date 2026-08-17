@@ -3,16 +3,26 @@ import Link from "next/link";
 import { useState } from "react";
 import { ArrowRight, Bell, CheckCircle2, MapPin, Search, Truck } from "lucide-react";
 import { MapPreview } from "./MapPreview";
-import { orders } from "../data";
+import toast from "react-hot-toast";
 
 export function Track() {
   const [id, setId] = useState("PT-2048");
   const [tracking, setTracking] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
+  const [orderInfo, setOrderInfo] = useState<any>(null);
 
   const handleTrack = () => {
     setTracking(true);
-    setTimeout(() => setTracking(false), 800);
+    setTimeout(() => {
+      const saved = JSON.parse(localStorage.getItem('mock_orders') || '[]');
+      const found = saved.find((o: any) => o.id === id);
+      if (found) {
+        setOrderInfo(found);
+      } else if (id !== "PT-2048") {
+        toast.error("Order not found. Showing sample tracking info.");
+      }
+      setTracking(false);
+    }, 800);
   };
 
   return (
@@ -38,10 +48,10 @@ export function Track() {
           <div className="track-card-heading">
             <div>
               <span className="track-status">
-                <i /> In transit
+                <i /> {orderInfo?.status || "In transit"}
               </span>
               <h2>{id}</h2>
-              <p>Express delivery · Booked today at 08:12 AM</p>
+              <p>{orderInfo?.type || "Express delivery"} · Booked today · To: {orderInfo?.destination || "Indore"}</p>
             </div>
             <button className={`outline-button ${subscribed ? 'active' : ''}`} onClick={() => setSubscribed(!subscribed)}>
               <Bell /> {subscribed ? "Updates on" : "Get updates"}
