@@ -54,7 +54,6 @@ import {
 const nav = [
   { href: "/dashboard", label: "Overview", icon: Home },
   { href: "/dashboard/orders", label: "My orders", icon: Package },
-  { href: "/dashboard/book", label: "Book a delivery", icon: Plus },
   { href: "/dashboard/track", label: "Track parcel", icon: Route },
   { href: "/dashboard/wallet", label: "Wallet", icon: Wallet },
 ];
@@ -88,7 +87,6 @@ function BottomNav() {
   const bottomLinks = [
     { href: "/dashboard", label: "Home", icon: Home },
     { href: "/dashboard/orders", label: "Orders", icon: Package },
-    { href: "/dashboard/book", label: "Book", icon: Plus },
     { href: "/dashboard/track", label: "Track", icon: Route },
     { href: "/dashboard/wallet", label: "Wallet", icon: Wallet },
   ];
@@ -124,7 +122,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
   const handleLogout = () => {
     localStorage.removeItem("mock_current_user");
-    window.location.href = "/";
+    localStorage.removeItem("active_booking_draft");
+    localStorage.removeItem("estimate_data");
+    window.location.href = "/login";
   };
   return (
     <div className={`dashboard-shell ${dark ? "dashboard-dark" : ""}`}>
@@ -359,18 +359,28 @@ export function Button({
   children,
   href,
   variant = "primary",
+  onClick,
+  style,
+  disabled,
+  className = "",
 }: {
   children: React.ReactNode;
   href?: string;
   variant?: "primary" | "secondary";
+  onClick?: () => void;
+  style?: React.CSSProperties;
+  disabled?: boolean;
+  className?: string;
 }) {
-  const className = `dash-button ${variant}`;
+  const combinedClass = `dash-button ${variant} ${className}`.trim();
   return href ? (
-    <Link href={href} className={className}>
+    <Link href={href} className={combinedClass} style={style}>
       {children}
     </Link>
   ) : (
-    <button className={className}>{children}</button>
+    <button type="button" className={combinedClass} onClick={onClick} style={style} disabled={disabled}>
+      {children}
+    </button>
   );
 }
 export function StatusBadge({ status, color }: { status: string; color: string }) {

@@ -54,9 +54,19 @@ export function SettingsPage() {
         ))}
       </div>
 
-      <Link href="/login" className="partner-button secondary" style={{ width: '100%', justifyContent: 'center', color: '#d95b66' }}>
+      <button
+        type="button"
+        onClick={() => {
+          localStorage.removeItem("mock_current_user");
+          localStorage.removeItem("active_booking_draft");
+          localStorage.removeItem("estimate_data");
+          window.location.href = "/login";
+        }}
+        className="partner-button secondary"
+        style={{ width: '100%', justifyContent: 'center', color: '#d95b66', border: '1px solid #fee2e2', background: '#fef2f2', cursor: 'pointer' }}
+      >
         <LogOut size={15} /> Sign out
-      </Link>
+      </button>
     </>
   )
 }

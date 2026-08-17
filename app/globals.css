@@ -1079,3 +1079,13 @@ button, input { font: inherit; }
   flex-shrink: 0;
 }
 
+@media (max-width: 860px) {
+  .desktop-nav-links,
+  .desktop-nav-actions {
+    display: none !important;
+  }
+  .mobile-menu-btn {
+    display: block !important;
+  }
+}
+

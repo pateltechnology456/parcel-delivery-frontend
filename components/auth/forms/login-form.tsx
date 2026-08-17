@@ -29,22 +29,35 @@ export function LoginForm() {
   const [notice, setNotice] = useState("");
   const otpValue = watch("otp") || "";
   const submit = async (data: LoginData) => {
-    await new Promise((r) => setTimeout(r, 700));
-    const isEnterprise = data.identifier.includes("enterprise");
+    await new Promise((r) => setTimeout(r, 600));
+    const isEnterprise = data.identifier.toLowerCase().includes("enterprise");
+    const cleanId = data.identifier.trim();
+    const isPhone = /^\d{10}$/.test(cleanId.replace(/\D/g, ''));
+    const phoneNum = isPhone ? cleanId.replace(/\D/g, '') : "";
+
     const mockUser = {
       id: isEnterprise ? "456" : "123",
-      name: isEnterprise ? "ABC Pvt Ltd" : "Ankit Sharma",
-      email: data.identifier,
+      name: isEnterprise ? "Acme Enterprise" : isPhone ? `User ${phoneNum.slice(-4)}` : cleanId.split("@")[0],
+      fullName: isEnterprise ? "Acme Enterprise" : isPhone ? `User ${phoneNum.slice(-4)}` : cleanId.split("@")[0],
+      email: isPhone ? `${phoneNum}@pateltechnology.in` : cleanId,
+      phone: phoneNum,
       accountType: isEnterprise ? "enterprise" : "normal"
     };
+
+    const redirect = searchParams?.get("redirect");
+    // If not actively continuing a booking handoff, remove old session drafts!
+    if (!redirect || !redirect.includes("book")) {
+      localStorage.removeItem("active_booking_draft");
+      localStorage.removeItem("estimate_data");
+    }
+
     localStorage.setItem("mock_current_user", JSON.stringify(mockUser));
     
     setNotice(`Welcome back. Redirecting...`);
     
     setTimeout(() => {
-      const redirect = searchParams?.get("redirect");
       router.push(redirect || "/dashboard");
-    }, 500);
+    }, 400);
   };
 
   const onError = (formErrors: any) => {

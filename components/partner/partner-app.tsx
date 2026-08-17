@@ -103,7 +103,19 @@ function Shell({ children }: { children: React.ReactNode }) {
             <CircleHelp />
             <div><b>Need help?</b><small>Contact partner support</small></div>
           </div>
-          <Link className="partner-logout" href="/login"><LogOut /> Sign out</Link>
+          <button
+            type="button"
+            className="partner-logout"
+            onClick={() => {
+              localStorage.removeItem("mock_current_user");
+              localStorage.removeItem("active_booking_draft");
+              localStorage.removeItem("estimate_data");
+              window.location.href = "/login";
+            }}
+            style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+          >
+            <LogOut /> Sign out
+          </button>
         </div>
       </aside>
 
