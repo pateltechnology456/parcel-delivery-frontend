@@ -1,3 +1,5 @@
-import { ResetPasswordPage as ResetPasswordScreen } from '@/components/auth/auth-shell'
+import { redirect } from 'next/navigation';
 
-export default function ResetPasswordPage() { return <ResetPasswordScreen /> }
+export default function ResetPasswordPage() {
+  redirect('/login');
+}

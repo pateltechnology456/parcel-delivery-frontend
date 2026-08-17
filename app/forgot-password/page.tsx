@@ -1,3 +1,5 @@
-import { PasswordRecoveryPage } from '@/components/auth/auth-shell'
+import { redirect } from 'next/navigation';
 
-export default function ForgotPasswordPage() { return <PasswordRecoveryPage /> }
+export default function ForgotPasswordPage() {
+  redirect('/login');
+}
