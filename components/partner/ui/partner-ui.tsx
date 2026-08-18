@@ -30,6 +30,7 @@ export function Button({
   disabled,
   className = '',
   type = 'button',
+  style,
 }: {
   children: React.ReactNode
   href?: string
@@ -38,11 +39,12 @@ export function Button({
   disabled?: boolean
   className?: string
   type?: 'button' | 'submit'
+  style?: React.CSSProperties
 }) {
   const c = `partner-button ${variant === 'secondary' ? 'secondary' : ''} ${className}`.trim()
   return href
-    ? <Link href={href} className={c}>{children}</Link>
-    : <button className={c} onClick={onClick} disabled={disabled} type={type}>{children}</button>
+    ? <Link href={href} className={c} style={style}>{children}</Link>
+    : <button className={c} onClick={onClick} disabled={disabled} type={type} style={style}>{children}</button>
 }
 
 export function PageHeading({
