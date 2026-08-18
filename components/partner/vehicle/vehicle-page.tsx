@@ -4,9 +4,17 @@ import { Bike, Hash, ShieldCheck, FileText, ChevronRight, Check, AlertCircle } f
 import { PageHeading, Button, Status } from '../ui/partner-ui'
 
 export function VehiclePage() {
-  const vehicle = {
+  const vehicle: {
+    type: string
+    number: string
+    rcStatus: 'approved' | 'pending'
+    insuranceStatus: 'approved' | 'pending'
+    verified: boolean
+    model: string
+    year: string
+  } = {
     type: 'Bike', number: 'MP-09-XX-4821',
-    rcStatus: 'approved' as const, insuranceStatus: 'pending' as const,
+    rcStatus: 'approved', insuranceStatus: 'pending',
     verified: true, model: 'Honda Activa 6G', year: '2023',
   }
 

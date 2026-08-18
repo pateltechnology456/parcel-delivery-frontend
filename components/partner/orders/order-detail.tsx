@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Phone, Navigation as NavIcon, ChevronRight, Loader2 } from 'lucide-react'
+import { Phone, Navigation as NavIcon, ChevronRight, Loader2, Check } from 'lucide-react'
 import { Button, PageHeading, Status, money } from '../ui/partner-ui'
 import { MapDynamic } from '../map/map-dynamic'
 import { PickupFlow } from '../pickup/pickup-flow'
@@ -65,8 +65,8 @@ export function OrderDetail({ id = 'PT-2841' }: { id?: string }) {
             <h2 style={{ marginBottom: 20 }}>{order.pickup.area} <ChevronRight size={18} style={{ margin: '0 8px', color: '#9db0c8' }} /> {order.delivery.area}</h2>
             
             <MapDynamic 
-              pickup={order.pickup} 
-              delivery={order.delivery} 
+              pickup={order.pickup as any} 
+              delivery={order.delivery as any} 
               height={220} 
             />
             

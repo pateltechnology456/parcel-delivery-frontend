@@ -6,10 +6,72 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Check, ChevronRight, Clock3, Map, Package, Route,
   Star, Target, Truck, Home, Wallet, Zap, Navigation,
-  Landmark, FileText, CalendarDays, Gift, X,
+  Landmark, FileText, CalendarDays, Gift, X, Flame, AlertCircle, Sparkles, BellRing
 } from 'lucide-react'
 import { Button, MiniMap, PageHeading, StatCard, Status, money } from '../ui/partner-ui'
 import { fadeUp, staggerContainer, staggerChild, pageTransition, smooth, spring } from '@/lib/animations'
+import { IncomingOrderModal, IncomingOrderData } from './IncomingOrderModal'
+import toast from 'react-hot-toast'
+
+/* ── Daily Milestone Incentive Card ── */
+export function DailyIncentiveBanner() {
+  const completed = 8;
+  const target = 12;
+  const progress = (completed / target) * 100;
+  const bonus = 350;
+
+  return (
+    <motion.div
+      variants={fadeUp}
+      initial="initial"
+      animate="animate"
+      transition={{ duration: 0.4, delay: 0.05 }}
+      style={{
+        background: 'linear-gradient(135deg, #0b2a62 0%, #001f5c 100%)',
+        borderRadius: '20px',
+        padding: '20px 24px',
+        color: '#ffffff',
+        marginBottom: '20px',
+        position: 'relative',
+        overflow: 'hidden',
+        boxShadow: '0 12px 30px rgba(11, 42, 98, 0.22)',
+        border: '1px solid rgba(255,255,255,0.1)'
+      }}
+    >
+      {/* Glow */}
+      <div style={{ position: 'absolute', right: '-40px', top: '-40px', width: '160px', height: '160px', background: 'radial-gradient(circle, rgba(255,107,44,0.3) 0%, transparent 70%)', pointerEvents: 'none' }} />
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '14px', position: 'relative', zIndex: 1 }}>
+        <div>
+          <span style={{ fontSize: '11px', fontWeight: 800, color: '#ffedd5', background: 'rgba(255, 107, 44, 0.3)', padding: '3px 10px', borderRadius: '99px', display: 'inline-flex', alignItems: 'center', gap: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <Gift size={12} /> Daily Incentive Active
+          </span>
+          <h3 style={{ fontSize: '18px', fontWeight: 800, margin: '8px 0 4px', color: '#ffffff' }}>
+            Complete {target - completed} more deliveries to earn +₹{bonus} Extra Bonus!
+          </h3>
+          <p style={{ fontSize: '12.5px', color: '#93c5fd', margin: 0 }}>
+            {completed} of {target} trips completed today ({Math.round(progress)}% progress)
+          </p>
+        </div>
+
+        <div style={{ textAlign: 'right' }}>
+          <span style={{ fontSize: '11px', color: '#cbd5e1' }}>Target Reward</span>
+          <b style={{ fontSize: '24px', fontWeight: 900, color: '#ff8a4c', display: 'block' }}>+₹{bonus}</b>
+        </div>
+      </div>
+
+      {/* Progress Bar */}
+      <div style={{ marginTop: '16px', background: 'rgba(255,255,255,0.15)', height: '10px', borderRadius: '99px', overflow: 'hidden', position: 'relative', zIndex: 1 }}>
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${progress}%` }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          style={{ height: '100%', background: 'linear-gradient(90deg, #22c55e 0%, #4ade80 100%)', borderRadius: '99px' }}
+        />
+      </div>
+    </motion.div>
+  );
+}
 
 /* ── Welcome ── */
 export function Welcome() {
@@ -44,7 +106,7 @@ export function Welcome() {
       </div>
       <div className="welcome-route">
         <Route /><span className="route-node first" /><span className="route-node last" />
-        <span className="route-box">12 deliveries<br /><b>today</b></span>
+        <span className="route-box">8 deliveries<br /><b>today</b></span>
       </div>
     </motion.div>
   )
@@ -94,104 +156,174 @@ export function QuickActions() {
   )
 }
 
-/* ── Incoming Orders ── */
+/* ── Incoming Orders with Fullscreen Alert Trigger ── */
 export function Incoming() {
-  const [orders, setOrders] = useState([
-    { id: 'PT-2941', from: 'Vijay Nagar', to: 'Bengaluru', pay: 280, dist: '4.8 km', time: '8 min' },
-    { id: 'PT-2942', from: 'Bhawarkua', to: 'Palasia', pay: 140, dist: '2.1 km', time: '12 min' },
+  const [orders, setOrders] = useState<IncomingOrderData[]>([
+    {
+      id: 'PT-2941',
+      pickup: 'Plot 42, Vijay Nagar, Scheme 54, Indore',
+      dropoff: 'Shop 12, Palasia Square, Indore',
+      distance: '4.8 km',
+      estTime: '18 mins',
+      pay: 280,
+      itemType: 'Documents & Carton',
+      vehicle: '2 Wheeler',
+      customerName: 'Ankit Sharma',
+      surge: '1.5x Surge'
+    },
+    {
+      id: 'PT-2942',
+      pickup: 'Bhawarkua Main Road, Indore',
+      dropoff: 'Annapurna Temple Road, Indore',
+      distance: '2.4 km',
+      estTime: '12 mins',
+      pay: 140,
+      itemType: 'Retail Parcel',
+      vehicle: '2 Wheeler',
+      customerName: 'Rahul Verma'
+    },
   ])
+
+  const [activeAlertOrder, setActiveAlertOrder] = useState<IncomingOrderData | null>(null);
   const [processing, setProcessing] = useState<string | null>(null);
 
-  const handleAction = (id: string, action: 'accept' | 'reject') => {
-    setProcessing(`${action}-${id}`);
+  const handleAction = (order: IncomingOrderData, action: 'accept' | 'reject') => {
+    setProcessing(`${action}-${order.id}`);
     setTimeout(() => {
-      setOrders(v => v.filter(x => x.id !== id));
+      setOrders(v => v.filter(x => x.id !== order.id));
       setProcessing(null);
-    }, 600);
+      if (action === 'accept') {
+        toast.success(`Order ${order.id} accepted! Opening details...`);
+      }
+    }, 500);
   };
+
   return (
-    <motion.div
-      className="partner-card incoming-card"
-      variants={fadeUp}
-      initial="initial"
-      animate="animate"
-      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -2, transition: { duration: 0.2 } }}
-    >
-      <div className="partner-card-title">
-        <div><h2>Incoming orders</h2><p>Nearby delivery requests</p></div>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={orders.length}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={spring}
-          >
+    <>
+      <IncomingOrderModal
+        order={activeAlertOrder}
+        onAccept={(ord) => {
+          handleAction(ord, 'accept');
+          setActiveAlertOrder(null);
+        }}
+        onDecline={(ord) => {
+          handleAction(ord, 'reject');
+          setActiveAlertOrder(null);
+        }}
+      />
+
+      <motion.div
+        className="partner-card incoming-card"
+        variants={fadeUp}
+        initial="initial"
+        animate="animate"
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        whileHover={{ y: -2, transition: { duration: 0.2 } }}
+      >
+        <div className="partner-card-title">
+          <div><h2>Incoming orders</h2><p>Nearby delivery requests</p></div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <button
+              type="button"
+              onClick={() => {
+                if (orders.length) setActiveAlertOrder(orders[0]);
+                else {
+                  const demoOrd: IncomingOrderData = {
+                    id: `PT-${Math.floor(2000 + Math.random() * 8000)}`,
+                    pickup: 'Vijay Nagar, Scheme 54, Indore',
+                    dropoff: 'Palasia Square, AB Road, Indore',
+                    distance: '3.6 km',
+                    estTime: '15 mins',
+                    pay: 220,
+                    itemType: 'Express Parcel',
+                    vehicle: '2 Wheeler',
+                    customerName: 'Pooja Jain',
+                    surge: '1.4x Surge'
+                  };
+                  setActiveAlertOrder(demoOrd);
+                }
+              }}
+              style={{
+                fontSize: '11px',
+                fontWeight: 700,
+                color: '#1154d9',
+                background: '#eff6ff',
+                border: '1px solid #dbeafe',
+                padding: '4px 10px',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              <BellRing size={12} /> Test Alert
+            </button>
             <Status color="orange">{orders.length} new</Status>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-      <AnimatePresence mode="popLayout">
-        {orders.length ? orders.map(order => (
-          <motion.div
-            className="incoming-order"
-            key={order.id}
-            layout
-            initial={{ opacity: 0, x: -20, height: 0 }}
-            animate={{ opacity: 1, x: 0, height: 'auto' }}
-            exit={{ opacity: 0, x: 40, height: 0, marginBottom: 0 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <div className="incoming-order-top">
-              <span className="order-serial"><Package /> {order.id}</span>
-              <b>{money(order.pay)}</b>
-            </div>
-            <div className="incoming-route">
-              <div><i /><span>{order.from}</span></div>
-              <Route />
-              <div><i /><span>{order.to}</span></div>
-            </div>
-            <div className="incoming-meta">
-              <span><Map /> {order.dist}</span>
-              <span><Clock3 /> Accept within {order.time}</span>
-              <div>
-                <motion.button
-                  onClick={() => handleAction(order.id, 'reject')}
-                  className="reject"
-                  disabled={!!processing}
-                  whileTap={{ scale: 0.94 }}
-                  whileHover={{ scale: 1.03 }}
-                  transition={spring}
-                >
-                  {processing === `reject-${order.id}` ? '...' : <><X /> Reject</>}
-                </motion.button>
-                <motion.button
-                  onClick={() => handleAction(order.id, 'accept')}
-                  className="accept"
-                  disabled={!!processing}
-                  whileTap={{ scale: 0.94 }}
-                  whileHover={{ scale: 1.03 }}
-                  transition={spring}
-                >
-                  {processing === `accept-${order.id}` ? 'Accepting...' : <><Check /> Accept</>}
-                </motion.button>
+          </div>
+        </div>
+
+        <AnimatePresence mode="popLayout">
+          {orders.length ? orders.map(order => (
+            <motion.div
+              className="incoming-order"
+              key={order.id}
+              layout
+              initial={{ opacity: 0, x: -20, height: 0 }}
+              animate={{ opacity: 1, x: 0, height: 'auto' }}
+              exit={{ opacity: 0, x: 40, height: 0, marginBottom: 0 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="incoming-order-top">
+                <span className="order-serial"><Package /> {order.id}</span>
+                <b>{money(order.pay)}</b>
               </div>
-            </div>
-          </motion.div>
-        )) : (
-          <motion.div
-            className="partner-empty"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <Check /><b>All caught up</b><span>No new delivery requests nearby.</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <Link className="view-all" href="/partner/orders">View all orders <ChevronRight /></Link>
-    </motion.div>
+              <div className="incoming-route">
+                <div><i /><span>{order.pickup}</span></div>
+                <Route />
+                <div><i /><span>{order.dropoff}</span></div>
+              </div>
+              <div className="incoming-meta">
+                <span><Map /> {order.distance}</span>
+                <span><Clock3 /> {order.estTime}</span>
+                <div>
+                  <motion.button
+                    onClick={() => handleAction(order, 'reject')}
+                    className="reject"
+                    disabled={!!processing}
+                    whileTap={{ scale: 0.94 }}
+                    whileHover={{ scale: 1.03 }}
+                    transition={spring}
+                  >
+                    {processing === `reject-${order.id}` ? '...' : <><X /> Reject</>}
+                  </motion.button>
+                  <motion.button
+                    onClick={() => setActiveAlertOrder(order)}
+                    className="accept"
+                    disabled={!!processing}
+                    whileTap={{ scale: 0.94 }}
+                    whileHover={{ scale: 1.03 }}
+                    transition={spring}
+                  >
+                    <Check /> View & Accept
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
+          )) : (
+            <motion.div
+              className="partner-empty"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Check /><b>All caught up</b><span>No new delivery requests nearby. Click &quot;Test Alert&quot; to test.</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <Link className="view-all" href="/partner/orders">View all orders <ChevronRight /></Link>
+      </motion.div>
+    </>
   )
 }
 
@@ -200,7 +332,7 @@ export function ActiveDelivery() {
   const steps = [
     { done: true,    current: false, icon: Check, label: 'Pickup complete',        sub: 'Vijay Nagar · 09:14 AM' },
     { done: false,   current: true,  icon: Truck, label: 'Heading to destination', sub: '4.8 km remaining · ETA 10:02 AM' },
-    { done: false,   current: false, icon: Home,  label: 'Drop-off',               sub: 'HSR Layout, Bengaluru' },
+    { done: false,   current: false, icon: Home,  label: 'Drop-off',               sub: 'Palasia Square, Indore' },
   ]
   return (
     <motion.div
@@ -384,6 +516,7 @@ export function Overview() {
         description="Your delivery command center for a more productive day."
         action={<Button href="/partner/orders">View all orders <ChevronRight /></Button>}
       />
+      <DailyIncentiveBanner />
       <Welcome />
       <motion.div
         className="partner-stat-grid"
