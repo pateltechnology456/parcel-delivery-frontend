@@ -148,7 +148,7 @@ export function Navbar() {
             For Enterprise
           </Link>
           <Link
-            href="/register/partner"
+            href="/login/partner"
             style={{
               display: 'flex',
               alignItems: 'center',

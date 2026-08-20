@@ -106,6 +106,27 @@ export function LoginForm() {
           Create an account <ChevronRight />
         </Link>
       </AuthFooter>
+
+      <div style={{ marginTop: "16px", paddingTop: "14px", borderTop: "1px solid #edf2f7", textAlign: "center" }}>
+        <Link
+          href="/login/partner"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "6px",
+            fontSize: "12.5px",
+            color: "#166534",
+            background: "#f0fdf4",
+            border: "1px solid #bbf7d0",
+            padding: "6px 14px",
+            borderRadius: "99px",
+            fontWeight: 700,
+            textDecoration: "none",
+          }}
+        >
+          🛵 Delivery Partner? Login to Partner Portal <ChevronRight size={13} />
+        </Link>
+      </div>
     </form>
   );
 }
