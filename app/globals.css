@@ -1078,3 +1078,66 @@ button, input { font: inherit; }
   }
 }
 
+/* ========================================================
+   ADMIN SIDEBAR ACTIVE & HOVER STATES
+   ======================================================== */
+.admin-nav-group a {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 9px 12px !important;
+  border-radius: 8px !important;
+  color: #64748b !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  transition: all 0.15s ease-in-out !important;
+  position: relative !important;
+}
+
+.admin-nav-group a:hover {
+  color: #0b2a62 !important;
+  background: #f1f5f9 !important;
+}
+
+.admin-nav-group a.active,
+.admin-sidebar nav a.active {
+  color: #1154d9 !important;
+  background: #edf4ff !important;
+  font-weight: 700 !important;
+  box-shadow: inset 3.5px 0 0 #1154d9 !important;
+}
+
+.admin-nav-group a.active svg,
+.admin-sidebar nav a.active svg {
+  color: #1154d9 !important;
+}
+
+.admin-nav-group a.active em,
+.admin-sidebar nav a.active em {
+  background: #1154d9 !important;
+  color: #ffffff !important;
+}
+
+.admin-dark .admin-nav-group a {
+  color: #94a3b8 !important;
+}
+
+.admin-dark .admin-nav-group a:hover {
+  color: #f8fafc !important;
+  background: #192e4d !important;
+}
+
+.admin-dark .admin-nav-group a.active,
+.admin-dark .admin-sidebar nav a.active {
+  color: #60a5fa !important;
+  background: #1e3a5f !important;
+  box-shadow: inset 3.5px 0 0 #60a5fa !important;
+}
+
+.admin-dark .admin-nav-group a.active svg,
+.admin-dark .admin-sidebar nav a.active svg {
+  color: #60a5fa !important;
+}
+
+
